@@ -144,6 +144,8 @@ h2.section-heading::after {
     justify-content: space-between;
     align-items: center;
     gap: 2rem;
+    padding-top: 80px;
+    padding-bottom: 40px;
 }
 
 .hero-text {
