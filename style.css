@@ -146,8 +146,9 @@ h2.section-heading::after {
     gap: 2rem;
     padding-top: 80px;
     padding-bottom: 40px;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+    
 }
 
 .hero-text {
@@ -200,6 +201,7 @@ h2.section-heading::after {
     display: block;
     position: relative;
     z-index: 1;
+    
 }
 
 .hero-image::before {
@@ -248,6 +250,7 @@ h2.section-heading::after {
     transition: all 0.3s ease;
     margin-right: 1rem;
     cursor: pointer;
+    flex-wrap: wrap;
 }
 
 .btn-primary {
@@ -286,6 +289,8 @@ h2.section-heading::after {
 .social-links a:hover {
     color: var(--accent-blue);
 }
+
+
 
 /* --- About Section --- */
 #about {
@@ -469,6 +474,7 @@ h2.section-heading::after {
 }
 
 .project-card {
+    position: relative; /* This is crucial for the overlay to work */
     background-color: var(--bg-light-navy);
     border-radius: 8px;
     overflow: hidden;
@@ -487,7 +493,7 @@ h2.section-heading::after {
     width: 100%;
     height: auto;
     display: block;
-    padding: 3rem;
+    padding: 1rem;
 }
 
 .project-content {
@@ -501,6 +507,17 @@ h2.section-heading::after {
     font-size: 1.4rem;
     margin-bottom: 0.5rem;
     color: var(--text-lightest);
+}
+
+/* NEW: Style for the link within the title */
+.project-title a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.project-title a:hover {
+    color: var(--accent-blue);
 }
 
 .project-description {
@@ -522,6 +539,8 @@ h2.section-heading::after {
 .project-links {
     margin-top: auto;
     text-align: right;
+    position: relative; /* Ensure links are on top of the overlay */
+    z-index: 2; /* Higher z-index than the card-link */
 }
 
 .project-links a {
@@ -533,6 +552,16 @@ h2.section-heading::after {
 
 .project-links a:hover {
     color: var(--accent-blue);
+}
+
+/* NEW: The main clickable overlay link */
+.card-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1; 
 }
 
 
