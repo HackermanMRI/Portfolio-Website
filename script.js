@@ -72,11 +72,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // ← EDIT THESE WORDS to change what cycles in the hero
         const words = [
-            'Frontend Developer',
+            'Web Developer',
             'Cybersecurity Enthusiast',
             'App Developer',
             'Tech Explorer',
-            'CTF Player',
+            'Graphic Designer',
         ];
 
         let wordIndex   = 0;
@@ -144,6 +144,46 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             });
         }
+    })();
+
+
+
+    /* ============================================================
+       3b. JOURNEY ACCORDION — collapse/expand blocks on click
+           All blocks start collapsed (aria-expanded="false").
+           Clicking the header toggles open/closed.
+           Each body uses max-height transition via .open class.
+
+           TO OPEN A BLOCK BY DEFAULT ON LOAD:
+           Find the header's aria-controls value (e.g. "edu-body")
+           and add body.classList.add('open') + set aria-expanded
+           to 'true' inside the forEach before the event listener.
+       ============================================================ */
+    (function initJourneyAccordion() {
+        const headers = document.querySelectorAll('.journey-block-header');
+        if (!headers.length) return;
+
+        headers.forEach(header => {
+            const bodyId = header.getAttribute('aria-controls');
+            const body   = document.getElementById(bodyId);
+            if (!body) return;
+
+            // Enforce closed state on load
+            body.classList.remove('open');
+            header.setAttribute('aria-expanded', 'false');
+
+            header.addEventListener('click', () => {
+                const isOpen = header.getAttribute('aria-expanded') === 'true';
+
+                if (isOpen) {
+                    body.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                } else {
+                    body.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+        });
     })();
 
 

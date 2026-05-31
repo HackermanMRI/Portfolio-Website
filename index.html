@@ -123,7 +123,7 @@
 
                 <!-- UPDATE: replace with your actual photo paths -->
                 <div class="hero-image">
-                    <img src="assets/mrinmoy2.png"
+                    <img src="assets/Profile.jpg"
                          alt="Portrait of Mrinmoy Dewan"
                          loading="eager"
                          width="380" height="460">
@@ -178,7 +178,7 @@
                             <span class="t-output"><span class="t-key">"focus"</span>:&nbsp;<span class="t-val">["Cybersecurity", "Android Dev", "Web Engineering"]</span>,</span>
                         </div>
                         <div class="terminal-line">
-                            <span class="t-output"><span class="t-key">"interests"</span>:&nbsp;<span class="t-val">["CTF Competitions", "Pen Testing", "System Analysis"]</span>,</span>
+                            <span class="t-output"><span class="t-key">"interests"</span>:&nbsp;<span class="t-val">["Problem Solving", "Pen Testing", "System Analysis"]</span>,</span>
                         </div>
                         <div class="terminal-line">
                             <span class="t-output"><span class="t-key">"status"</span>:&nbsp;<span class="t-val">"Open to collaborations &amp; opportunities"</span></span>
@@ -234,18 +234,31 @@
 
 
         <!-- =====================================================
-             JOURNEY SECTION (Experience & Education)
+             JOURNEY SECTION
              =====================================================
-             TO ADD AN EXPERIENCE ENTRY:
-             Copy a .timeline-item block, paste inside
-             .experience-column > .timeline, and update:
-               <h4>  → Role title
-               .company → Organization name
-               .date   → "YYYY - YYYY"
-               last <p>  → Brief description
+             STRUCTURE:
+               1. Education        (accordion block)
+               2. Experience
+                  2a. Volunteering Experience  (accordion block)
+                  2b. Professional Experience  (accordion block)
 
-             TO ADD AN EDUCATION ENTRY: same pattern,
-             paste inside .education-column > .timeline.
+             All blocks start COLLAPSED on load.
+             Clicking the header toggles open/close.
+
+             ── HOW TO ADD AN EDUCATION ENTRY ──
+             Copy a .journey-card block inside
+             #edu-body > .timeline and update:
+               <h4>       → Degree / certificate title
+               .jc-org    → Institution name
+               .jc-date   → "YYYY – YYYY"
+               .jc-desc   → Description paragraph
+
+             ── HOW TO ADD A VOLUNTEERING ENTRY ──
+             Same pattern, inside #vol-body > .timeline
+
+             ── HOW TO ADD A PROFESSIONAL ENTRY ──
+             Same pattern, inside #pro-body > .timeline
+             (Remove the .journey-empty placeholder first)
         ====================================================== -->
         <section id="journey" aria-labelledby="journey-heading">
             <div class="container">
@@ -254,74 +267,206 @@
                 <h2 class="section-heading" id="journey-heading">My Journey</h2>
                 <span class="section-rule"></span>
 
-                <div class="journey-container">
+                <div class="journey-accordion">
 
-                    <!-- ===== EXPERIENCE COLUMN ===== -->
-                    <div class="experience-column">
-                        <h3 class="journey-col-title">experience</h3>
-                        <div class="timeline">
+                    <!-- ══════════════════════════════════════
+                         BLOCK 1: EDUCATION
+                    ══════════════════════════════════════ -->
+                    <div class="journey-block" id="block-edu">
 
-                            <div class="timeline-item">
-                                <h4>Vice Chair</h4>
-                                <p class="company">IEEE Computer Society JnU Student Branch Chapter</p>
-                                <p class="date">2024 – 2025</p>
-                                <p>Led the executive committee and coordinated multiple national-level tech events.</p>
+                        <!-- Clickable header — toggles the block -->
+                        <button class="journey-block-header"
+                                aria-expanded="false"
+                                aria-controls="edu-body"
+                                data-block="edu">
+                            <div class="jbh-left">
+                                <span class="jbh-icon" aria-hidden="true">
+                                    <i class="fa-solid fa-graduation-cap"></i>
+                                </span>
+                                <div class="jbh-text">
+                                    <span class="jbh-label">Education</span>
+                                    
+                                </div>
                             </div>
-
-                            <div class="timeline-item">
-                                <h4>Graphics Designer</h4>
-                                <p class="company">IEEE Computer Society Bangladesh Chapter — Team SPARK</p>
-                                <p class="date">2023 – 2024</p>
-                                <p>Designed promotional materials for national-level IEEE events across Bangladesh.</p>
+                            <div class="jbh-right">
+                                <span class="jbh-count-tag">2 records</span>
+                                <span class="jbh-chevron" aria-hidden="true">
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </span>
                             </div>
+                        </button>
 
-                            <div class="timeline-item">
-                                <h4>Webmaster</h4>
-                                <p class="company">IEEE Computer Society JnU Student Branch Chapter</p>
-                                <p class="date">2023 – 2024</p>
-                                <p>Managed chapter website — updates, security audits, and accessibility improvements.</p>
+                        <!-- Collapsible body -->
+                        <div class="journey-block-body" id="edu-body" role="region" aria-labelledby="block-edu">
+                            <div class="timeline">
+
+                                <!-- ── EDUCATION ENTRY ──
+                                     Copy this block to add a new entry -->
+                                <div class="journey-card">
+                                    <div class="jc-dot" aria-hidden="true"></div>
+                                    <div class="jc-content">
+                                        <h4 class="jc-title">B.Sc. in Computer Science &amp; Engineering</h4>
+                                        <p class="jc-org">Jagannath University, Dhaka, Bangladesh</p>
+                                        <p class="jc-date">2020 – 2025 (Expected)</p>
+                                        <p class="jc-desc">Key modules: Data Structures, Algorithms, Cybersecurity, Software Engineering, Computer Networks.</p>
+                                    </div>
+                                </div>
+
+                                <div class="journey-card">
+                                    <div class="jc-dot" aria-hidden="true"></div>
+                                    <div class="jc-content">
+                                        <h4 class="jc-title">Higher Secondary Certificate (HSC)</h4>
+                                        <p class="jc-org">St. Joseph Higher Secondary School, Dhaka</p>
+                                        <p class="jc-date">2019 – 2020</p>
+                                        <p class="jc-desc">Science group. Achieved Golden GPA 5.00.</p>
+                                    </div>
+                                </div>
+
                             </div>
-
-                            <div class="timeline-item">
-                                <h4>Graphics Coordinator</h4>
-                                <p class="company">IEEE Jagannath University Student Branch</p>
-                                <p class="date">2022 – 2023</p>
-                                <p>Led the visual design team for university-wide IEEE events and branding efforts.</p>
-                            </div>
-
-                            <div class="timeline-item">
-                                <h4>Sub-Executive</h4>
-                                <p class="company">Jagannath University IT Society (JnUITS)</p>
-                                <p class="date">2022 – 2025</p>
-                                <p>Organized workshops, managed teams, and executed large-scale IT events.</p>
-                            </div>
-
                         </div>
+                    </div><!-- /block-edu -->
+
+
+                    <!-- ══════════════════════════════════════
+                         BLOCK 2: EXPERIENCE (parent group)
+                         This is a visual group label only —
+                         not itself an accordion trigger.
+                    ══════════════════════════════════════ -->
+                    <div class="journey-group-label" aria-hidden="false">
+                        <span class="jgl-line" aria-hidden="true"></span>
+                        <span class="jgl-text">
+                            <i class="fa-solid fa-briefcase" aria-hidden="true"></i>
+                            Experience
+                        </span>
+                        <span class="jgl-line" aria-hidden="true"></span>
                     </div>
 
-                    <!-- ===== EDUCATION COLUMN ===== -->
-                    <div class="education-column">
-                        <h3 class="journey-col-title">education</h3>
-                        <div class="timeline">
+                    <!-- ── SUB-BLOCK 2a: VOLUNTEERING ── -->
+                    <div class="journey-block journey-block--sub" id="block-vol">
 
-                            <div class="timeline-item">
-                                <h4>B.Sc. in Computer Science & Engineering</h4>
-                                <p class="company">Jagannath University, Dhaka, Bangladesh</p>
-                                <p class="date">2020 – 2025 (Expected)</p>
-                                <p>Key modules: Data Structures, Algorithms, Cybersecurity, Software Engineering, Computer Networks.</p>
+                        <button class="journey-block-header"
+                                aria-expanded="false"
+                                aria-controls="vol-body"
+                                data-block="vol">
+                            <div class="jbh-left">
+                                <span class="jbh-icon" aria-hidden="true">
+                                    <i class="fa-solid fa-hand-holding-heart"></i>
+                                </span>
+                                <div class="jbh-text">
+                                    <span class="jbh-label">Volunteering Experience</span>
+                                </div>
                             </div>
-
-                            <div class="timeline-item">
-                                <h4>Higher Secondary Certificate (HSC)</h4>
-                                <p class="company">St. Joseph Higher Secondary School, Dhaka</p>
-                                <p class="date">2019 – 2020</p>
-                                <p>Science group. Achieved Golden GPA 5.00.</p>
+                            <div class="jbh-right">
+                                <span class="jbh-count-tag">5 records</span>
+                                <span class="jbh-chevron" aria-hidden="true">
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </span>
                             </div>
+                        </button>
 
+                        <div class="journey-block-body" id="vol-body" role="region">
+                            <div class="timeline">
+
+                                <!-- ── VOLUNTEERING ENTRY ──
+                                     Copy this block to add a new entry -->
+                                <div class="journey-card">
+                                    <div class="jc-dot" aria-hidden="true"></div>
+                                    <div class="jc-content">
+                                        <h4 class="jc-title">Vice Chair</h4>
+                                        <p class="jc-org">IEEE Computer Society JnU Student Branch Chapter</p>
+                                        <p class="jc-date">2024 – 2025</p>
+                                        <p class="jc-desc">Led the executive committee and coordinated multiple national-level tech events.</p>
+                                    </div>
+                                </div>
+
+                                <div class="journey-card">
+                                    <div class="jc-dot" aria-hidden="true"></div>
+                                    <div class="jc-content">
+                                        <h4 class="jc-title">Graphics Designer</h4>
+                                        <p class="jc-org">IEEE Computer Society Bangladesh Chapter — Team SPARK</p>
+                                        <p class="jc-date">2023 – 2024</p>
+                                        <p class="jc-desc">Designed promotional materials for national-level IEEE events across Bangladesh.</p>
+                                    </div>
+                                </div>
+
+                                <div class="journey-card">
+                                    <div class="jc-dot" aria-hidden="true"></div>
+                                    <div class="jc-content">
+                                        <h4 class="jc-title">Webmaster</h4>
+                                        <p class="jc-org">IEEE Computer Society JnU Student Branch Chapter</p>
+                                        <p class="jc-date">2023 – 2024</p>
+                                        <p class="jc-desc">Managed chapter website — updates, security audits, and accessibility improvements.</p>
+                                    </div>
+                                </div>
+
+                                <div class="journey-card">
+                                    <div class="jc-dot" aria-hidden="true"></div>
+                                    <div class="jc-content">
+                                        <h4 class="jc-title">Graphics Coordinator</h4>
+                                        <p class="jc-org">IEEE Jagannath University Student Branch</p>
+                                        <p class="jc-date">2022 – 2023</p>
+                                        <p class="jc-desc">Led the visual design team for university-wide IEEE events and branding efforts.</p>
+                                    </div>
+                                </div>
+
+                                <div class="journey-card">
+                                    <div class="jc-dot" aria-hidden="true"></div>
+                                    <div class="jc-content">
+                                        <h4 class="jc-title">Sub-Executive</h4>
+                                        <p class="jc-org">Jagannath University IT Society (JnUITS)</p>
+                                        <p class="jc-date">2022 – 2025</p>
+                                        <p class="jc-desc">Organized workshops, managed teams, and executed large-scale IT events.</p>
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
-                    </div>
+                    </div><!-- /block-vol -->
 
-                </div>
+
+                    <!-- ── SUB-BLOCK 2b: PROFESSIONAL ── -->
+                    <div class="journey-block journey-block--sub" id="block-pro">
+
+                        <button class="journey-block-header"
+                                aria-expanded="false"
+                                aria-controls="pro-body"
+                                data-block="pro">
+                            <div class="jbh-left">
+                                <span class="jbh-icon" aria-hidden="true">
+                                    <i class="fa-solid fa-building"></i>
+                                </span>
+                                <div class="jbh-text">
+                                    <span class="jbh-label">Professional Experience</span>
+                                    
+                                </div>
+                            </div>
+                            <div class="jbh-right">
+                                <span class="jbh-count-tag jbh-count-tag--empty">0 records</span>
+                                <span class="jbh-chevron" aria-hidden="true">
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </span>
+                            </div>
+                        </button>
+
+                        <div class="journey-block-body" id="pro-body" role="region">
+                            <div class="timeline">
+
+                                <!-- ══════════════════════════════════════════
+                                     PLACEHOLDER — Remove this .journey-empty
+                                     div when you add your first professional
+                                     entry. Then paste a .journey-card block.
+                                ══════════════════════════════════════════ -->
+                                <div class="journey-empty">
+                                    <i class="fa-regular fa-clock" aria-hidden="true"></i>
+                                    <p>No professional experience listed yet.</p>
+                                    <span>Check back soon — currently building mys.</span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div><!-- /block-pro -->
+
+                </div><!-- /journey-accordion -->
             </div>
         </section>
 
