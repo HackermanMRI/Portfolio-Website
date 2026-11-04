@@ -84,10 +84,10 @@ window.PORTFOLIO = {
             stack: ['Java', 'Android Studio', 'XML'],
             github: 'https://github.com/HackermanMRI/SystemEdge',
             demo: null,
-            cover: 'assets/SystemEdge-cover.png',
+            cover: 'assets/systemedge-cover.webp',
             hue: 205,
             gallery: [1, 2, 3, 4, 5, 6, 7, 8].map(
-                n => `images/systemedge/photo_${n}_2025-08-01_20-37-41.jpg`
+                n => `images/systemedge/screen-${n}.webp`
             ),
         },
         {
@@ -101,7 +101,7 @@ window.PORTFOLIO = {
             stack: ['HTML', 'CSS', 'JavaScript'],
             github: 'https://github.com/HackermanMRI/LifeLink',
             demo: null,
-            cover: 'assets/lifelink-cover.png',
+            cover: 'assets/lifelink-cover.webp',
             hue: 215,
             gallery: [],
         },

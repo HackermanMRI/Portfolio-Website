@@ -2,18 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
     <!-- Security: GitHub Pages cannot send headers, so the policy is set here.
          Only this origin runs scripts; fonts come from Google Fonts only. -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'">
     <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="theme-color" content="#060913">
+    <meta name="color-scheme" content="dark">
 
     <title>Mrinmoy Dewan | Computer Science Student, Security and Software</title>
     <meta name="description" content="Mrinmoy Dewan is a computer science student at Jagannath University building secure Android and web software. Projects, experience and contact.">
     <meta name="author" content="Mrinmoy Dewan">
-    <meta name="theme-color" content="#060913">
-    <meta name="color-scheme" content="dark">
 
     <meta property="og:type" content="website">
     <meta property="og:title" content="Mrinmoy Dewan | Security and Software">
@@ -22,48 +22,55 @@
     <meta property="og:image" content="https://hackermanmri.github.io/assets/og-image.jpg">
     <meta name="twitter:card" content="summary_large_image">
 
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Cdefs%3E%3ClinearGradient id=%27g%27 x1=%270%27 y1=%270%27 x2=%271%27 y2=%271%27%3E%3Cstop offset=%270%27 stop-color=%27%235cc8ff%27/%3E%3Cstop offset=%271%27 stop-color=%27%239a8cff%27/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%2764%27 height=%2764%27 rx=%2718%27 fill=%27url(%23g)%27/%3E%3Ctext x=%2732%27 y=%2742%27 font-family=%27Arial%27 font-weight=%27800%27 font-size=%2726%27 text-anchor=%27middle%27 fill=%27%2305101f%27%3EMD%3C/text%3E%3C/svg%3E">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Cdefs%3E%3ClinearGradient id=%27g%27 x1=%270%27 y1=%270%27 x2=%271%27 y2=%271%27%3E%3Cstop offset=%270%27 stop-color=%27%235cc8ff%27/%3E%3Cstop offset=%271%27 stop-color=%27%239a8cff%27/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%2764%27 height=%2764%27 rx=%2718%27 fill=%27url(%23g)%27/%3E%3Ctext x=%2732%27 y=%2742%27 font-family=%27Arial%27 font-weight=%27800%27 font-size=%2726%27 text-anchor=%27middle%27 fill=%27%2305101f%27%3EMD%3C/text%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Geist:wght@400..600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <script src="boot.js"></script>
 
     <script type="application/ld+json">
     {"@context":"https://schema.org","@type":"Person","name":"Mrinmoy Dewan","url":"https://hackermanmri.github.io/","sameAs":["https://github.com/HackermanMRI","https://www.linkedin.com/in/mrinmoydewan"],"alumniOf":"Jagannath University","knowsAbout":["Cybersecurity","Android development","Web development"]}
     </script>
 </head>
-<body>
+<body data-section="top">
 
     <a class="skip" href="#main">Skip to content</a>
 
-    <!-- Backdrop that the glass surfaces refract -->
+    <!-- Backdrop the glass refracts -->
     <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="edge edge-top" aria-hidden="true"></div>
+    <div class="edge edge-bottom" aria-hidden="true"></div>
     <div class="progress" aria-hidden="true"><span></span></div>
 
-    <!-- Icon sprite + refraction filter (no third-party icon fonts) -->
+    <!-- Icon sprite + lens filter. The filter bends the backdrop only near the edges
+         (Chromium), like Apple's glass; other browsers get plain blur. No third-party icons. -->
     <svg class="sprite" width="0" height="0" aria-hidden="true" focusable="false">
         <defs>
-            <filter id="liquid" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB">
-                <feTurbulence type="fractalNoise" baseFrequency="0.012 0.02" numOctaves="2" seed="7" result="n"/>
-                <feDisplacementMap in="SourceGraphic" in2="n" scale="14" xChannelSelector="R" yChannelSelector="G"/>
+            <filter id="lens-wide" x="0" y="0" width="1" height="1" color-interpolation-filters="sRGB">
+                <feImage href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='400'%20height='100'%20preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient%20id='x'%20x1='0'%20x2='1'%20y1='0'%20y2='0'%3E%3Cstop%20offset='0'%20stop-color='%23ff0000'/%3E%3Cstop%20offset='.07'%20stop-color='%23800000'/%3E%3Cstop%20offset='.93'%20stop-color='%23800000'/%3E%3Cstop%20offset='1'%20stop-color='%23000000'/%3E%3C/linearGradient%3E%3ClinearGradient%20id='y'%20x1='0'%20x2='0'%20y1='0'%20y2='1'%3E%3Cstop%20offset='0'%20stop-color='%2300ff00'/%3E%3Cstop%20offset='.28'%20stop-color='%23008000'/%3E%3Cstop%20offset='.72'%20stop-color='%23008000'/%3E%3Cstop%20offset='1'%20stop-color='%23000000'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='400'%20height='100'%20fill='%23000'/%3E%3Crect%20width='400'%20height='100'%20fill='url(%23x)'/%3E%3Crect%20width='400'%20height='100'%20fill='url(%23y)'%20style='mix-blend-mode:screen'/%3E%3C/svg%3E" preserveAspectRatio="none" result="map"/>
+                <feDisplacementMap id="lens-disp" in="SourceGraphic" in2="map" scale="26" xChannelSelector="R" yChannelSelector="G"/>
             </filter>
         </defs>
         <symbol id="i-github" viewBox="0 0 16 16"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></symbol>
         <symbol id="i-linkedin" viewBox="0 0 24 24"><g fill="currentColor"><circle cx="5" cy="5" r="2"/><rect x="3.2" y="9" width="3.6" height="11.5" rx=".6"/><path d="M10 9h3.4v1.6c.7-1.2 2-1.9 3.7-1.9 3.2 0 3.9 2.1 3.9 4.8v6H17v-5.3c0-1.3-.1-2.5-1.7-2.5s-1.9 1.2-1.9 2.5v5.3H10z"/></g></symbol>
-        <symbol id="i-mail" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3.5"/><path d="m4.5 8.5 7.5 5.5 7.5-5.5"/></g></symbol>
-        <symbol id="i-arrow" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M7 17 17 7M8.5 7H17v8.5"/></symbol>
-        <symbol id="i-download" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M12 4v11m0 0 4.5-4.5M12 15l-4.5-4.5M5 20h14"/></symbol>
-        <symbol id="i-copy" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="3"/><path d="M5.5 15H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v.5"/></g></symbol>
-        <symbol id="i-check" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
-        <symbol id="i-back" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="m14.5 6-6 6 6 6"/></symbol>
+        <symbol id="i-mail" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3.5"/><path d="m4.5 8.5 7.5 5.5 7.5-5.5"/></symbol>
+        <symbol id="i-arrow" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M7 17 17 7M8.5 7H17v8.5"/></symbol>
+        <symbol id="i-download" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 4v11m0 0 4.5-4.5M12 15l-4.5-4.5M5 20h14"/></symbol>
+        <symbol id="i-copy" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="3"/><path d="M5.5 15H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v.5"/></symbol>
+        <symbol id="i-check" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+        <symbol id="i-back" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m14.5 6-6 6 6 6"/></symbol>
+        <symbol id="i-user" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c.8-3.6 3.8-5.5 7.5-5.5s6.7 1.9 7.5 5.5"/></symbol>
+        <symbol id="i-briefcase" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="7.5" width="18" height="12" rx="3"/><path d="M9 7.5V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5M3 13h18"/></symbol>
+        <symbol id="i-layers" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m12 4 8.5 4.5L12 13 3.5 8.5z"/><path d="m3.5 12.5 8.5 4.5 8.5-4.5"/></symbol>
+        <symbol id="i-cpu" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="3"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/></symbol>
+        <symbol id="i-sliders" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 8h9M17 8h3M4 16h3M11 16h9"/><circle cx="15" cy="8" r="2"/><circle cx="9" cy="16" r="2"/></symbol>
     </svg>
 
-    <!-- ============ NAV ============ -->
+    <!-- ============ TOP BAR (floating glass control layer) ============ -->
     <header class="nav-wrap">
-        <nav class="nav glass" aria-label="Main">
-            <a href="#top" class="brand" aria-label="Mrinmoy Dewan, back to top">
-                <span class="brand-mark" aria-hidden="true">MD</span>
-            </a>
+        <nav class="nav glass glass--lens" aria-label="Main">
+            <a href="#top" class="brand" aria-label="Mrinmoy Dewan, back to top"><span aria-hidden="true">MD</span></a>
 
             <ul class="nav-links" id="nav-links">
                 <li><a href="#about">About</a></li>
@@ -74,11 +81,21 @@
                 <li class="nav-ind" aria-hidden="true"></li>
             </ul>
 
-            <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Open menu">
-                <span></span><span></span>
-            </button>
+            <a class="nav-cta glass-btn" href="assets/Mrinmoy-Dewan-CV.pdf" target="_blank" rel="noopener noreferrer">
+                <svg class="ic" aria-hidden="true"><use href="#i-download"/></svg><span>CV</span>
+            </a>
         </nav>
     </header>
+
+    <!-- ============ MOBILE DOCK (thumb-reach tab bar, phones only) ============ -->
+    <nav class="dock glass glass--lens" id="dock" aria-label="Sections">
+        <span class="dock-lens" aria-hidden="true"></span>
+        <a href="#about"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg><span>About</span></a>
+        <a href="#experience"><svg class="ic" aria-hidden="true"><use href="#i-briefcase"/></svg><span>Experience</span></a>
+        <a href="#projects"><svg class="ic" aria-hidden="true"><use href="#i-layers"/></svg><span>Projects</span></a>
+        <a href="#skills"><svg class="ic" aria-hidden="true"><use href="#i-cpu"/></svg><span>Skills</span></a>
+        <a href="#contact"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg><span>Contact</span></a>
+    </nav>
 
     <main id="main">
 
@@ -87,7 +104,7 @@
             <div class="container hero-grid">
 
                 <div class="hero-copy">
-                    <p class="status glass-chip hero-in" data-d="0">
+                    <p class="status chip hero-in" data-d="0">
                         <span class="status-dot" aria-hidden="true"></span>
                         Open to collaborations and opportunities
                     </p>
@@ -102,9 +119,9 @@
                     </p>
 
                     <ul class="focus hero-in" data-d="7" aria-label="Focus areas">
-                        <li class="glass-chip">Cybersecurity</li>
-                        <li class="glass-chip">Android development</li>
-                        <li class="glass-chip">Web engineering</li>
+                        <li class="chip">Cybersecurity</li>
+                        <li class="chip">Android development</li>
+                        <li class="chip">Web engineering</li>
                     </ul>
 
                     <div class="cta hero-in" data-d="8">
@@ -112,18 +129,20 @@
                             <span>View projects</span>
                             <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg>
                         </a>
-                        <a class="btn btn-glass magnetic" href="assets/Mrinmoy-Dewan-CV.pdf" target="_blank" rel="noopener noreferrer">
+                        <a class="btn btn-glass glass magnetic" href="assets/Mrinmoy-Dewan-CV.pdf" target="_blank" rel="noopener noreferrer">
                             <svg class="ic" aria-hidden="true"><use href="#i-download"/></svg>
                             <span>Download CV</span>
                         </a>
                     </div>
                 </div>
 
-                <div class="hero-visual hero-in" data-d="3">
-                    <div class="portrait glass tilt">
-                        <img src="assets/profile.jpg" alt="Portrait of Mrinmoy Dewan" width="402" height="401" fetchpriority="high">
+                <div class="hero-visual">
+                    <div class="visual-in hero-in" data-d="3">
+                        <div class="portrait surface tilt">
+                            <img src="assets/profile.jpg" alt="Portrait of Mrinmoy Dewan" width="402" height="401" fetchpriority="high">
+                        </div>
+                        <div class="orbit" aria-hidden="true"></div>
                     </div>
-                    <div class="orbit" aria-hidden="true"></div>
                 </div>
 
             </div>
@@ -149,7 +168,7 @@
                         </p>
                     </div>
 
-                    <dl class="facts glass tilt reveal" data-i="2">
+                    <dl class="facts surface tilt reveal" data-i="2">
                         <div><dt>Studying</dt><dd>B.Sc. Computer Science &amp; Engineering</dd></div>
                         <div><dt>University</dt><dd>Jagannath University, Dhaka</dd></div>
                         <div><dt>Focus</dt><dd>Cybersecurity, Android, Web</dd></div>
@@ -185,12 +204,12 @@
             <div class="container">
                 <header class="section-head reveal">
                     <h2 id="proj-title" class="h2">Projects</h2>
-                    <p class="section-sub">Selected work. Source code is on GitHub.</p>
+                    <p class="section-sub">Selected work. Open a project for details, or go straight to the source.</p>
                 </header>
 
-                <div class="projects" id="project-grid">
-                    <noscript><p class="muted">Enable JavaScript to see projects, or browse them on <a href="https://github.com/HackermanMRI">GitHub</a>.</p></noscript>
-                </div>
+                <ul class="projects" id="project-grid">
+                    <noscript><li class="muted">Enable JavaScript to see projects, or browse them on <a href="https://github.com/HackermanMRI">GitHub</a>.</li></noscript>
+                </ul>
             </div>
         </section>
 
@@ -202,7 +221,7 @@
                     <p class="section-sub">Tools I use regularly.</p>
                 </header>
 
-                <div class="skills glass reveal" id="skill-list">
+                <div class="skills surface reveal" id="skill-list">
                     <noscript><p class="muted">C, C++, Python, Java, JavaScript, HTML, CSS, MySQL, Firebase, Linux, Android Studio.</p></noscript>
                 </div>
             </div>
@@ -211,7 +230,7 @@
         <!-- ============ CONTACT ============ -->
         <section class="section contact" id="contact" aria-labelledby="contact-title">
             <div class="container">
-                <div class="contact-card glass tilt reveal">
+                <div class="contact-card surface tilt reveal">
                     <h2 id="contact-title" class="h2">Let's talk</h2>
                     <p class="contact-sub">Email is the best way to reach me. I'm happy to talk about internships, projects and security.</p>
 
@@ -220,15 +239,15 @@
                             <svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg>
                             <span>mrinmoylax01@gmail.com</span>
                         </a>
-                        <button class="btn btn-glass magnetic" type="button" id="copy-email" data-email="mrinmoylax01@gmail.com">
+                        <button class="btn btn-glass glass magnetic" type="button" id="copy-email" data-email="mrinmoylax01@gmail.com">
                             <svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg>
                             <span>Copy email</span>
                         </button>
                     </div>
 
                     <ul class="socials">
-                        <li><a class="icon-link glass-chip" href="https://github.com/HackermanMRI" target="_blank" rel="noopener noreferrer"><svg class="ic" aria-hidden="true"><use href="#i-github"/></svg>GitHub</a></li>
-                        <li><a class="icon-link glass-chip" href="https://www.linkedin.com/in/mrinmoydewan" target="_blank" rel="noopener noreferrer"><svg class="ic" aria-hidden="true"><use href="#i-linkedin"/></svg>LinkedIn</a></li>
+                        <li><a class="glass-btn glass" href="https://github.com/HackermanMRI" target="_blank" rel="noopener noreferrer"><svg class="ic" aria-hidden="true"><use href="#i-github"/></svg>GitHub</a></li>
+                        <li><a class="glass-btn glass" href="https://www.linkedin.com/in/mrinmoydewan" target="_blank" rel="noopener noreferrer"><svg class="ic" aria-hidden="true"><use href="#i-linkedin"/></svg>LinkedIn</a></li>
                     </ul>
                     <p class="sr-only" id="copy-status" role="status" aria-live="polite"></p>
                 </div>
@@ -238,12 +257,16 @@
 
     <footer class="footer">
         <div class="container footer-in">
-            <p>&copy; <span id="year">2026</span> Mrinmoy Dewan</p>
-            <p>Narayanganj, Bangladesh</p>
+            <p>&copy; <span id="year">2026</span> Mrinmoy Dewan, Narayanganj, Bangladesh</p>
+            <button class="fx-toggle glass-btn glass" type="button" id="fx-toggle" aria-pressed="false">
+                <svg class="ic" aria-hidden="true"><use href="#i-sliders"/></svg>
+                <span>Effects: Full</span>
+            </button>
         </div>
     </footer>
 
     <script src="content.js"></script>
+    <script src="fx.js" defer></script>
     <script src="main.js" defer></script>
 </body>
 </html>
