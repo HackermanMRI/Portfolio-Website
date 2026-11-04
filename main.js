@@ -1,410 +1,345 @@
-/* ============================================================
-   MAIN — renders content.js into the page and drives the motion.
-   Used by index.html and project.html.
-   Security note: nothing here uses innerHTML. All text goes through
-   textContent and all URLs through safeUrl(), so data in content.js
-   can never inject markup or script.
-   ============================================================ */
+/* main.js — renders content.js into the page and wires up the UI.
+ * Works on index.html and project.html. Text goes in with textContent only (never innerHTML),
+ * and every URL passes through safeUrl()/safePath(), so content cannot inject markup.
+ */
 (function () {
     'use strict';
 
-    const DATA = window.PORTFOLIO;
-    if (!DATA) return;
+    var D = window.PORTFOLIO;
+    if (!D) { return; }
 
-    const $  = (sel, root = document) => root.querySelector(sel);
-    const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const finePointer  = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-    const SVG_NS = 'http://www.w3.org/2000/svg';
+    var SVG_NS = 'http://www.w3.org/2000/svg';
+    var $ = function (s, r) { return (r || document).querySelector(s); };
+    var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
 
     /* ---------- helpers ---------- */
-
-    /** Only https: links are allowed through. Anything else becomes null. */
-    function safeUrl(value) {
-        try {
-            const u = new URL(value, location.href);
-            return u.protocol === 'https:' ? u.href : null;
-        } catch (_) { return null; }
+    function el(tag, cls, text) {
+        var n = document.createElement(tag);
+        if (cls) { n.className = cls; }
+        if (text != null) { n.textContent = text; }
+        return n;
     }
-
-    /** Relative asset paths only (no scheme, no protocol-relative, no traversal). */
-    function safePath(value) {
-        return typeof value === 'string' && /^[\w][\w\-./]*$/.test(value) && !value.includes('..') ? value : null;
+    function icon(name, cls) {
+        var s = document.createElementNS(SVG_NS, 'svg');
+        s.setAttribute('class', cls || 'ic');
+        s.setAttribute('aria-hidden', 'true');
+        var u = document.createElementNS(SVG_NS, 'use');
+        u.setAttribute('href', '#i-' + name);
+        s.appendChild(u);
+        return s;
     }
+    function safeUrl(u) {                       // https only: blocks javascript:, data:, http:
+        try { var p = new URL(u, location.href); return p.protocol === 'https:' ? p.href : null; } catch (e) { return null; }
+    }
+    function safePath(p) {                      // same-site relative path only
+        return typeof p === 'string' && /^[\w\-./]+$/.test(p) && p.indexOf('..') === -1 ? p : null;
+    }
+    function link(cls, href, label, ic, ext) {
+        var a = el('a', cls);
+        a.href = href;
+        if (ext) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+        if (ic) { a.appendChild(icon(ic)); }
+        a.appendChild(el('span', null, label));
+        return a;
+    }
+    function vtName(id) { return 'cover-' + id.replace(/[^\w-]/g, ''); }
 
-    function el(tag, props, children) {
-        const node = document.createElement(tag);
-        if (props) {
-            for (const [k, v] of Object.entries(props)) {
-                if (v == null || v === false) continue;
-                if (k === 'class') node.className = v;
-                else if (k === 'text') node.textContent = v;
-                else if (k === 'vars') for (const [name, val] of Object.entries(v)) node.style.setProperty(name, val);
-                else node.setAttribute(k, v);
-            }
+    function coverEl(p, cls) {
+        var wrap = el('div', 'cover' + (cls ? ' ' + cls : ''));
+        var src = safePath(p.cover);
+        if (src) {
+            var img = new Image();
+            img.src = src; img.alt = ''; img.decoding = 'async';
+            wrap.appendChild(img);
+        } else {
+            wrap.classList.add('cover--gen');
+            wrap.style.setProperty('--hue', String(Number(p.hue) || 220));
+            wrap.appendChild(el('span', null, p.title.charAt(0)));
         }
-        (children || []).forEach(c => c && node.append(c));
-        return node;
+        wrap.style.viewTransitionName = vtName(p.id);     // shared element: card cover morphs into the page hero
+        return wrap;
     }
 
-    function icon(id, cls) {
-        const svg = document.createElementNS(SVG_NS, 'svg');
-        svg.setAttribute('class', cls || 'ic');
-        svg.setAttribute('aria-hidden', 'true');
-        const use = document.createElementNS(SVG_NS, 'use');
-        use.setAttribute('href', '#' + id);
-        svg.append(use);
-        return svg;
-    }
-
-    function externalLink(url, label, iconId, extraClass) {
-        const href = safeUrl(url);
-        if (!href) return null;
-        return el('a', {
-            class: 'icon-link glass-chip' + (extraClass ? ' ' + extraClass : ''),
-            href, target: '_blank', rel: 'noopener noreferrer',
-        }, [icon(iconId), document.createTextNode(label)]);
-    }
-
-    function chips(list) {
-        return el('ul', { class: 'chips', 'aria-label': 'Technologies' },
-            list.map(t => el('li', { class: 'chip', text: t })));
-    }
-
-    /* ---------- render: timelines, projects, skills ---------- */
-
-    function timelineItem(entry, i) {
-        return el('li', { class: 't-item glass reveal', 'data-i': String(Math.min(i, 4)) }, [
-            el('span', { class: 't-dot', 'aria-hidden': 'true' }),
-            el('p',  { class: 't-date',  text: entry.date }),
-            el('h4', { class: 't-title', text: entry.title }),
-            el('p',  { class: 't-org',   text: entry.org }),
-            el('p',  { class: 't-text',  text: entry.text }),
-        ]);
-    }
-
-    function renderTimeline(id, entries) {
-        const list = document.getElementById(id);
-        if (list) entries.forEach((e, i) => list.append(timelineItem(e, i)));
-    }
-
-    function projectCard(p, i) {
-        const imgPath = safePath(p.cover);
-        const cover = imgPath
-            ? el('div', { class: 'cover' }, [
-                el('img', { src: imgPath, alt: p.title + ' app preview', width: '450', height: '470', loading: 'lazy', decoding: 'async' }),
-              ])
-            : el('div', { class: 'cover cover--gen', vars: { '--hue': String(Number(p.hue) || 210) }, 'aria-hidden': 'true' }, [
-                el('span', { text: p.title.replace(/^\W*(3D\s+)?/i, '').charAt(0).toUpperCase() }),
-              ]);
-
-        const links = el('div', { class: 'p-links' });
-        const gh = externalLink(p.github, 'Source', 'i-github');
-        if (gh) { gh.setAttribute('aria-label', p.title + ' source code on GitHub'); links.append(gh); }
-        const demo = externalLink(p.demo, 'Live demo', 'i-arrow');
-        if (demo) { demo.setAttribute('aria-label', p.title + ' live demo'); links.append(demo); }
-
-        return el('article', { class: 'p-card glass tilt reveal', 'data-i': String(i % 2 + 1) }, [
-            cover,
-            el('div', { class: 'p-body' }, [
-                el('p',  { class: 'p-kind', text: p.kind }),
-                el('h3', { class: 'p-title' }, [
-                    el('a', { href: 'project.html?id=' + encodeURIComponent(p.id), text: p.title }),
-                ]),
-                el('p', { class: 'p-sum', text: p.summary }),
-                chips(p.stack),
-                links,
-            ]),
-        ]);
-    }
-
-    function renderProjects() {
-        const grid = document.getElementById('project-grid');
-        if (!grid) return;
-        $('noscript', grid)?.remove();
-        DATA.projects.forEach((p, i) => grid.append(projectCard(p, i)));
-    }
-
-    function renderSkills() {
-        const box = document.getElementById('skill-list');
-        if (!box) return;
-        $('noscript', box)?.remove();
-        let k = 0;
-        DATA.skills.forEach(group => {
-            box.append(el('div', { class: 'skill-row' }, [
-                el('p', { class: 'skill-group', text: group.group }),
-                el('ul', { class: 'skill-items' }, group.items.map(name =>
-                    el('li', { class: 'skill', text: name, vars: { '--k': String(k++) } }))),
-            ]));
+    /* ---------- hero: split into letters (aria-hidden lines; the h1 keeps its accessible text) ---------- */
+    function splitHero() {
+        var n = 0;
+        $$('[data-split]').forEach(function (line) {
+            var t = line.textContent; line.textContent = '';
+            Array.prototype.forEach.call(t, function (c) {
+                var s = el('span', 'ch', c); s.style.setProperty('--n', String(n++)); line.appendChild(s);
+            });
         });
     }
 
-    /* ---------- project detail page (project.html?id=...) ---------- */
+    /* ---------- index sections ---------- */
+    function renderTimeline(host, items) {
+        if (!host) { return; }
+        host.classList.add('timeline');
+        items.forEach(function (it, i) {
+            var li = el('li', 't-item surface reveal');
+            li.setAttribute('data-i', String(Math.min(i + 1, 4)));
+            li.appendChild(el('span', 't-dot')).setAttribute('aria-hidden', 'true');
+            li.appendChild(el('p', 't-date', it.date));
+            li.appendChild(el('h4', 't-title', it.title));
+            li.appendChild(el('p', 't-org', it.org));
+            if (it.text) { li.appendChild(el('p', 't-text', it.text)); }
+            host.appendChild(li);
+        });
+    }
 
-    function renderProjectPage() {
-        const root = document.getElementById('project-root');
-        if (!root) return;
+    function renderProjects(host) {
+        if (!host) { return; }
+        D.projects.forEach(function (p, i) {
+            var cell = el('li', 'p-cell');
+            var card = el('article', 'p-card surface tilt reveal');
+            card.setAttribute('data-i', String(Math.min(i + 1, 4)));
+            card.appendChild(coverEl(p));
 
-        // Whitelist lookup: the id from the URL is only ever compared, never inserted.
-        const id = new URLSearchParams(location.search).get('id');
-        const idx = DATA.projects.findIndex(p => p.id === id);
-        root.textContent = '';
+            var body = el('div', 'p-body');
+            body.appendChild(el('p', 'p-kind', p.kind));
+            var h = el('h3', 'p-title');
+            var a = el('a', null, p.title);
+            a.href = 'project.html?id=' + encodeURIComponent(p.id);
+            h.appendChild(a);
+            body.appendChild(h);
+            body.appendChild(el('p', 'p-sum', p.summary));
 
-        if (idx === -1) {
+            var chips = el('ul', 'chips');
+            p.stack.forEach(function (s) { chips.appendChild(el('li', 'chip', s)); });
+            body.appendChild(chips);
+
+            var links = el('div', 'p-links');
+            var gh = safeUrl(p.github);
+            if (gh) { links.appendChild(link('glass-btn', gh, 'Source', 'github', true)); }
+            var more = el('span', 'p-more');
+            more.appendChild(el('span', null, 'Details'));
+            more.appendChild(icon('arrow'));
+            links.appendChild(more);
+            body.appendChild(links);
+
+            card.appendChild(body);
+            cell.appendChild(card);
+            host.appendChild(cell);
+        });
+    }
+
+    function renderSkills(host) {
+        if (!host) { return; }
+        var k = 0;
+        D.skills.forEach(function (g) {
+            var row = el('div', 'skill-row');
+            row.appendChild(el('p', 'skill-group', g.group));
+            var items = el('ul', 'skill-items');
+            g.items.forEach(function (name) {
+                var li = el('li', 'skill', name);
+                li.style.setProperty('--k', String(k++));
+                items.appendChild(li);
+            });
+            row.appendChild(items);
+            host.appendChild(row);
+        });
+    }
+
+    /* ---------- project page ---------- */
+    function renderProjectPage(root) {
+        var id = new URLSearchParams(location.search).get('id');
+        var idx = D.projects.findIndex(function (p) { return p.id === id; });   // whitelist compare, id is never inserted anywhere
+        var back = link('back', 'index.html#projects', 'All projects', 'back');
+        back.addEventListener('click', function (e) {          // keep scroll position when we came from the portfolio
+            try {
+                var ref = document.referrer && new URL(document.referrer);
+                if (ref && ref.origin === location.origin && !/project\.html$/.test(ref.pathname) && history.length > 1) { e.preventDefault(); history.back(); }
+            } catch (err) { /* fall through to the normal link */ }
+        });
+        root.appendChild(back);
+
+        if (idx < 0) {
             document.title = 'Project not found | Mrinmoy Dewan';
-            root.append(
-                el('h1', { text: 'Project not found' }),
-                el('p', { class: 'lede', text: 'That project does not exist. Pick one from the list.' }),
-                el('div', { class: 'page-cta' }, [el('a', { class: 'btn btn-primary', href: 'index.html#projects', text: 'Back to projects' })])
-            );
+            root.appendChild(el('h1', null, 'Project not found'));
+            root.appendChild(el('p', 'lede', 'That link does not match any project.'));
+            var cta = el('div', 'page-cta');
+            cta.appendChild(link('btn btn-primary', 'index.html#projects', 'See all projects', 'arrow'));
+            root.appendChild(cta);
             return;
         }
 
-        const p = DATA.projects[idx];
+        var p = D.projects[idx];
         document.title = p.title + ' | Mrinmoy Dewan';
-        const metaDesc = $('meta[name="description"]');
-        if (metaDesc) metaDesc.setAttribute('content', p.summary);
+        root.appendChild(el('p', 'p-kind hero-in', p.kind));
+        var h1 = el('h1', 'hero-in', p.title); h1.setAttribute('data-d', '1'); root.appendChild(h1);
+        var lede = el('p', 'lede hero-in', p.summary); lede.setAttribute('data-d', '2'); root.appendChild(lede);
 
-        const cta = el('div', { class: 'page-cta' });
-        const gh = safeUrl(p.github);
-        if (gh) cta.append(el('a', { class: 'btn btn-primary magnetic', href: gh, target: '_blank', rel: 'noopener noreferrer' }, [
-            icon('i-github'), el('span', { text: 'View source' })]));
-        const demo = safeUrl(p.demo);
-        if (demo) cta.append(el('a', { class: 'btn btn-glass magnetic', href: demo, target: '_blank', rel: 'noopener noreferrer' }, [
-            el('span', { text: 'Live demo' }), icon('i-arrow')]));
+        var actions = el('div', 'page-cta');
+        var gh = safeUrl(p.github), demo = safeUrl(p.demo);
+        if (gh) { actions.appendChild(link('btn btn-primary magnetic', gh, 'View source on GitHub', 'github', true)); }
+        if (demo) { actions.appendChild(link('btn btn-glass glass magnetic', demo, 'Live demo', 'arrow', true)); }
+        root.appendChild(actions);
 
-        root.append(
-            el('a', { class: 'back', href: 'index.html#projects' }, [icon('i-back'), el('span', { text: 'All projects' })]),
-            el('p', { class: 'p-kind reveal', text: p.kind }),
-            el('h1', { class: 'reveal', 'data-i': '1', text: p.title }),
-            el('p', { class: 'lede reveal', 'data-i': '2', text: p.summary }),
-            cta,
-            el('div', { class: 'detail' }, [
-                el('div', { class: 'detail-copy reveal', 'data-i': '3' }, p.details.map(t => el('p', { text: t }))),
-                el('dl', { class: 'facts glass reveal', 'data-i': '4' }, [
-                    el('div', {}, [el('dt', { text: 'Type' }),  el('dd', { text: p.kind })]),
-                    el('div', {}, [el('dt', { text: 'Built with' }), el('dd', { text: p.stack.join(', ') })]),
-                ]),
-            ])
-        );
+        root.appendChild(coverEl(p, 'p-hero'));
 
-        const shots = (p.gallery || []).map(safePath).filter(Boolean);
+        var detail = el('div', 'detail');
+        var copy = el('div', 'detail-copy reveal');
+        p.details.forEach(function (t) { copy.appendChild(el('p', null, t)); });
+        detail.appendChild(copy);
+
+        var facts = el('dl', 'facts surface reveal'); facts.setAttribute('data-i', '1');
+        [['Type', p.kind], ['Stack', p.stack.join(', ')]].forEach(function (r) {
+            var d = el('div'); d.appendChild(el('dt', null, r[0])); d.appendChild(el('dd', null, r[1])); facts.appendChild(d);
+        });
+        detail.appendChild(facts);
+        root.appendChild(detail);
+
+        var shots = (p.gallery || []).map(safePath).filter(Boolean);
         if (shots.length) {
-            root.append(el('div', { class: 'gallery', role: 'region', 'aria-label': p.title + ' screenshots', tabindex: '0' },
-                shots.map((src, n) => el('figure', { class: 'glass' }, [
-                    el('img', { src, alt: p.title + ' screen ' + (n + 1) + ' of ' + shots.length, width: '576', height: '1280', loading: 'lazy', decoding: 'async' }),
-                ]))));
+            var g = el('div', 'gallery reveal');
+            g.setAttribute('role', 'region'); g.setAttribute('aria-label', p.title + ' screenshots'); g.tabIndex = 0;
+            shots.forEach(function (s, i) {
+                var f = el('figure', 'surface');
+                var img = new Image();
+                img.src = s; img.alt = p.title + ' screenshot ' + (i + 1); img.loading = 'lazy'; img.decoding = 'async';
+                f.appendChild(img); g.appendChild(f);
+            });
+            root.appendChild(g);
         }
 
-        const prev = DATA.projects[(idx - 1 + DATA.projects.length) % DATA.projects.length];
-        const next = DATA.projects[(idx + 1) % DATA.projects.length];
-        const pager = (proj, label) => el('a', { class: 'glass', href: 'project.html?id=' + encodeURIComponent(proj.id) }, [
-            el('small', { text: label }), el('b', { text: proj.title })]);
-        root.append(el('nav', { class: 'pager', 'aria-label': 'More projects' }, [pager(prev, 'Previous'), pager(next, 'Next')]));
+        var pager = el('nav', 'pager reveal'); pager.setAttribute('aria-label', 'More projects');
+        var prev = D.projects[idx - 1], next = D.projects[idx + 1];
+        [[prev, 'Previous'], [next, 'Next']].forEach(function (pair, i) {
+            if (!pair[0]) { if (i === 1 && !prev) { return; } return; }
+            var a = el('a', 'surface');
+            a.href = 'project.html?id=' + encodeURIComponent(pair[0].id);
+            a.appendChild(el('small', null, pair[1]));
+            a.appendChild(el('b', null, pair[0].title));
+            pager.appendChild(a);
+        });
+        if (pager.children.length) { root.appendChild(pager); }
     }
 
-    renderTimeline('leadership-list', DATA.leadership);
-    renderTimeline('education-list', DATA.education);
-    renderProjects();
-    renderSkills();
-    renderProjectPage();
-
-    /* ---------- hero: split the name into characters for the entrance ---------- */
-    (function splitName() {
-        let n = 0;
-        $$('[data-split]').forEach(line => {
-            const text = line.textContent;
-            line.textContent = '';
-            Array.from(text).forEach(ch => line.append(el('span', { class: 'ch', text: ch, vars: { '--n': String(n++) } })));
-        });
-    })();
-
-    const yearEl = document.getElementById('year');
-    if (yearEl) yearEl.textContent = String(new Date().getFullYear());
-
-    /* ---------- scroll reveals ---------- */
-    (function reveals() {
-        const items = $$('.reveal');
-        if (!items.length) return;
-        if (reduceMotion || !('IntersectionObserver' in window)) { items.forEach(i => i.classList.add('in')); return; }
-        const io = new IntersectionObserver(entries => {
-            entries.forEach(e => {
-                if (!e.isIntersecting) return;
+    /* ---------- reveal: one observer, entries processed as a batch so each batch staggers ---------- */
+    function observeReveals() {
+        var items = $$('.reveal');
+        if (!items.length) { return; }
+        if (!('IntersectionObserver' in window)) { items.forEach(function (n) { n.classList.add('in'); }); return; }
+        var io = new IntersectionObserver(function (entries) {
+            var batch = entries.filter(function (e) { return e.isIntersecting; })
+                .sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top || a.boundingClientRect.left - b.boundingClientRect.left; });
+            batch.forEach(function (e, i) {
+                e.target.style.setProperty('--b', String(i));
                 e.target.classList.add('in');
                 io.unobserve(e.target);
             });
-        }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
-        items.forEach(i => io.observe(i));
+        }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+        items.forEach(function (n) { io.observe(n); });
+    }
 
-        // Skills: stagger chips in once their container is visible
-        const skills = document.getElementById('skill-list');
-        if (skills) new IntersectionObserver((es, o) => es.forEach(e => {
-            if (e.isIntersecting) { skills.classList.add('in'); o.disconnect(); }
-        }), { threshold: 0.15 }).observe(skills);
-    })();
+    /* ---------- navigation: scroll-spy, sliding indicators, dock behaviour ---------- */
+    function setupNav() {
+        var navLinks = $$('#nav-links a');
+        var dock = $('#dock');
+        var dockLinks = dock ? $$('a', dock) : [];
+        var navInd = $('.nav-ind'), dockLens = $('.dock-lens');
+        if (!navLinks.length && !dockLinks.length) { return; }
 
-    /* ---------- nav: scrolled state, indicator, scroll-spy, mobile menu ---------- */
-    (function nav() {
-        const navEl   = $('.nav');
-        const list    = document.getElementById('nav-links');
-        const btn     = $('.menu-btn');
-        if (!navEl || !list) return;
-
-        const links    = $$('a[href^="#"]', list);
-        const sections = links.map(a => $(a.getAttribute('href'))).filter(Boolean);
-
-        function moveIndicator(active) {
-            if (!active || getComputedStyle(btn).display !== 'none') { list.style.setProperty('--ind-o', '0'); return; }
-            list.style.setProperty('--ind-x', active.offsetLeft + 'px');
-            list.style.setProperty('--ind-w', active.offsetWidth + 'px');
-            list.style.setProperty('--ind-o', '1');
+        function put(ind, a, vx, vw, vo) {
+            if (!ind) { return; }
+            if (!a || !a.offsetWidth) { ind.style.setProperty(vo, '0'); return; }
+            ind.style.setProperty(vx, a.offsetLeft + 'px');
+            ind.style.setProperty(vw, a.offsetWidth + 'px');
+            ind.style.setProperty(vo, '1');
         }
-        let current = null;
-        function setActive(link) {
-            current = link;
-            links.forEach(a => a === link ? a.setAttribute('aria-current', 'true') : a.removeAttribute('aria-current'));
-            moveIndicator(link);
+        var current = '';
+        function mark(id) {
+            current = id;
+            document.body.dataset.section = id;
+            var n = null, d = null;
+            navLinks.forEach(function (a) {
+                if (a.getAttribute('href') === '#' + id) { a.setAttribute('aria-current', 'true'); n = a; } else { a.removeAttribute('aria-current'); }
+            });
+            dockLinks.forEach(function (a) {
+                if (a.getAttribute('href') === '#' + id) { a.setAttribute('aria-current', 'true'); d = a; } else { a.removeAttribute('aria-current'); }
+            });
+            put(navInd, n, '--ind-x', '--ind-w', '--ind-o');
+            put(dockLens, d, '--x', '--w', '--o');
         }
 
-        if ('IntersectionObserver' in window && sections.length) {
-            const spy = new IntersectionObserver(entries => {
-                entries.forEach(e => {
-                    if (e.isIntersecting) setActive(links.find(a => a.getAttribute('href') === '#' + e.target.id));
-                });
-            }, { rootMargin: '-42% 0px -52% 0px' });
-            sections.forEach(s => spy.observe(s));
-            const top = document.getElementById('top');
-            if (top) new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) setActive(null); }),
-                { rootMargin: '-40% 0px -50% 0px' }).observe(top);
+        if ('IntersectionObserver' in window) {
+            var spy = new IntersectionObserver(function (es) {
+                es.forEach(function (e) { if (e.isIntersecting) { mark(e.target.id === 'top' ? '' : e.target.id); } });
+            }, { rootMargin: '-45% 0px -50% 0px' });
+            $$('main section[id]').forEach(function (s) { spy.observe(s); });
         }
-        window.addEventListener('resize', () => moveIndicator(current), { passive: true });
-        if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => moveIndicator(current));
+        window.addEventListener('resize', function () { mark(current); });
+        if (document.fonts && document.fonts.ready) { document.fonts.ready.then(function () { mark(current); }); }
 
-        if (!btn) return;
-        function setOpen(open, returnFocus) {
-            list.classList.toggle('open', open);
-            btn.setAttribute('aria-expanded', String(open));
-            btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
-            if (!open && returnFocus) btn.focus();
-        }
-        btn.addEventListener('click', () => setOpen(btn.getAttribute('aria-expanded') !== 'true'));
-        links.forEach(a => a.addEventListener('click', () => setOpen(false)));
-        document.addEventListener('keydown', e => { if (e.key === 'Escape' && list.classList.contains('open')) setOpen(false, true); });
-        document.addEventListener('pointerdown', e => {
-            if (list.classList.contains('open') && !navEl.contains(e.target)) setOpen(false);
-        });
-    })();
-
-    /* ---------- scroll-linked: progress bar, nav shadow, timeline lines ---------- */
-    (function scrollLinked() {
-        const bar = $('.progress span');
-        const navEl = $('.nav');
-        const lines = $$('.timeline');
-        let ticking = false;
-
-        function update() {
-            ticking = false;
-            const y = window.scrollY;
-            const max = document.documentElement.scrollHeight - window.innerHeight;
-            if (bar) bar.style.transform = 'scaleX(' + (max > 0 ? Math.min(1, y / max) : 0) + ')';
-            if (navEl) navEl.classList.toggle('is-scrolled', y > 12);
-            lines.forEach(tl => {
-                const r = tl.getBoundingClientRect();
-                const p = Math.max(0, Math.min(1, (window.innerHeight * 0.75 - r.top) / r.height));
-                tl.style.setProperty('--line', reduceMotion ? '1' : p.toFixed(3));
+        /* dock: minimise while scrolling down (like the iOS tab bar), expand on scroll up / touch */
+        if (dock && window.FX) {
+            var lastY = window.scrollY;
+            FX.scroll(function (y) {
+                var dy = y - lastY;
+                if (Math.abs(dy) < 8) { return; }
+                FX.write('dock', function () { dock.classList.toggle('min', dy > 0 && y > 120); });
+                lastY = y;
+            });
+            dock.addEventListener('pointerdown', function () { dock.classList.remove('min'); });
+            dock.addEventListener('click', function (e) {
+                if (e.target.closest('a') && navigator.vibrate) { try { navigator.vibrate(6); } catch (err) { /* unsupported */ } }
             });
         }
-        window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
-        window.addEventListener('resize', update, { passive: true });
-        update();
-    })();
+    }
 
-    /* ---------- pointer effects: glass sheen, card tilt, magnetic buttons, aurora parallax ---------- */
-    (function pointerFx() {
-        if (!finePointer) return;
-
-        let target = null, raf = 0, last = null;
-        const MAX_TILT = 7;
-
-        function frame() {
-            raf = 0;
-            if (!last || !target) return;
-            const r = target.getBoundingClientRect();
-            const x = last.clientX - r.left, y = last.clientY - r.top;
-            target.style.setProperty('--mx', x + 'px');
-            target.style.setProperty('--my', y + 'px');
-            if (!reduceMotion && target.classList.contains('tilt')) {
-                target.classList.add('is-moving');
-                target.style.setProperty('--ry', ((x / r.width - .5) * 2 * MAX_TILT).toFixed(2) + 'deg');
-                target.style.setProperty('--rx', ((.5 - y / r.height) * 2 * MAX_TILT).toFixed(2) + 'deg');
-            }
+    /* ---------- Effects toggle (Safari has no prefers-reduced-transparency, so users get a control) ---------- */
+    function setupEffects() {
+        var btn = $('#fx-toggle');
+        if (!btn) { return; }
+        var label = $('span', btn);
+        function paint() {
+            var full = document.documentElement.getAttribute('data-fx') !== 'lite';
+            btn.setAttribute('aria-pressed', String(full));
+            if (label) { label.textContent = 'Effects: ' + (full ? 'Full' : 'Lite'); }
         }
-        function release(node) {
-            if (!node) return;
-            node.classList.remove('is-moving');
-            node.style.setProperty('--rx', '0deg');
-            node.style.setProperty('--ry', '0deg');
-        }
-
-        document.addEventListener('pointermove', e => {
-            last = e;
-            const glass = e.target instanceof Element ? e.target.closest('.glass') : null;
-            if (glass !== target) { release(target); target = glass; }
-            if (target && !raf) raf = requestAnimationFrame(frame);
-
-            // aurora parallax: tiny, eased by CSS transform on the container
-            if (!reduceMotion) {
-                const aurora = $('.aurora');
-                if (aurora) {
-                    aurora.style.setProperty('translate',
-                        ((e.clientX / innerWidth - .5) * -26).toFixed(1) + 'px ' + ((e.clientY / innerHeight - .5) * -26).toFixed(1) + 'px');
-                }
-            }
-        }, { passive: true });
-        document.addEventListener('pointerleave', () => { release(target); target = null; });
-
-        // Magnetic buttons
-        if (!reduceMotion) {
-            $$('.magnetic').forEach(b => {
-                b.addEventListener('pointermove', e => {
-                    const r = b.getBoundingClientRect();
-                    b.style.translate = ((e.clientX - r.left - r.width / 2) * .22).toFixed(1) + 'px ' + ((e.clientY - r.top - r.height / 2) * .32).toFixed(1) + 'px';
-                });
-                b.addEventListener('pointerleave', () => { b.style.translate = ''; });
-            });
-        }
-    })();
-
-    /* ---------- copy email ---------- */
-    (function copyEmail() {
-        const btn = document.getElementById('copy-email');
-        if (!btn) return;
-        const label = $('span', btn);
-        const status = document.getElementById('copy-status');
-        let timer;
-
-        async function copy(text) {
-            if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(text); return; }
-            const ta = el('textarea', { readonly: '', 'aria-hidden': 'true', tabindex: '-1' });
-            ta.value = text;
-            document.body.append(ta); ta.select();
-            const ok = document.execCommand('copy');
-            ta.remove();
-            if (!ok) throw new Error('copy failed');
-        }
-
-        btn.addEventListener('click', async () => {
-            const original = 'Copy email';
-            try {
-                await copy(btn.dataset.email);
-                label.textContent = 'Copied';
-                if (status) status.textContent = 'Email address copied to clipboard';
-            } catch (_) {
-                label.textContent = 'Press Ctrl+C';
-                if (status) status.textContent = 'Could not copy. Use the email link instead.';
-            }
-            clearTimeout(timer);
-            timer = setTimeout(() => { label.textContent = original; }, 2200);
+        btn.addEventListener('click', function () {
+            var next = document.documentElement.getAttribute('data-fx') === 'lite' ? 'full' : 'lite';
+            document.documentElement.setAttribute('data-fx', next);
+            try { localStorage.setItem('fx', next); } catch (e) { /* storage blocked */ }
+            paint();
         });
-    })();
+        paint();
+    }
+
+    function setupCopy() {
+        var btn = $('#copy-email'), status = $('#copy-status');
+        if (!btn) { return; }
+        var label = $('span', btn), original = label ? label.textContent : '';
+        btn.addEventListener('click', function () {
+            var email = btn.getAttribute('data-email') || D.person.email;
+            function done(ok) {
+                if (label) { label.textContent = ok ? 'Copied' : 'Copy failed'; }
+                if (status) { status.textContent = ok ? 'Email address copied' : 'Could not copy the email address'; }
+                setTimeout(function () { if (label) { label.textContent = original; } }, 1800);
+            }
+            if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(email).then(function () { done(true); }, function () { done(false); }); } else { done(false); }
+        });
+    }
+
+    function ready() {
+        var y = $('#year'); if (y) { y.textContent = String(new Date().getFullYear()); }
+        observeReveals();
+        setupNav();
+        setupEffects();
+        setupCopy();
+    }
+
+    /* page assembly */
+    var isProject = !!$('#project-root');
+    if (isProject) {
+        renderProjectPage($('#project-root'));
+    } else {
+        splitHero();
+        renderTimeline($('#leadership-list'), D.leadership);
+        renderTimeline($('#education-list'), D.education);
+        renderProjects($('#project-grid'));
+        renderSkills($('#skill-list'));
+    }
+
+    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', ready); } else { ready(); }
 })();
