@@ -71,6 +71,37 @@
         });
     }
 
+    /* ---------- headings: wrap each word so it can rise out of a mask (text stays readable to screen readers) ---------- */
+    function splitWords() {
+        $$('.h2').forEach(function (h) {
+            var words = h.textContent.trim().split(/\s+/);
+            h.textContent = '';
+            words.forEach(function (word, i) {
+                var w = el('span', 'w');
+                var inner = el('span', null, word);
+                inner.style.setProperty('--w', String(i));
+                w.appendChild(inner);
+                h.appendChild(w);
+                if (i < words.length - 1) { h.appendChild(document.createTextNode(' ')); }
+            });
+        });
+    }
+
+    /* ---------- decorative skills ticker: two identical sets per row so the loop is seamless ---------- */
+    function renderTicker(host) {
+        if (!host) { return; }
+        var names = [];
+        D.skills.forEach(function (g) { g.items.forEach(function (n) { names.push(n); }); });
+        $$('.ticker-row', host).forEach(function (row, r) {
+            var list = r ? names.slice().reverse() : names;
+            for (var copy = 0; copy < 2; copy++) {
+                var set = el('div', 'ticker-set');
+                list.forEach(function (n) { set.appendChild(el('span', 'tick', n)); });
+                row.appendChild(set);
+            }
+        });
+    }
+
     /* ---------- index sections ---------- */
     function renderTimeline(host, items) {
         if (!host) { return; }
@@ -335,6 +366,8 @@
         renderProjectPage($('#project-root'));
     } else {
         splitHero();
+        splitWords();
+        renderTicker($('#ticker'));
         renderTimeline($('#leadership-list'), D.leadership);
         renderTimeline($('#education-list'), D.education);
         renderProjects($('#project-grid'));

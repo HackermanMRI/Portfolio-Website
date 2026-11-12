@@ -71,6 +71,7 @@
     <header class="nav-wrap">
         <nav class="nav glass glass--lens" aria-label="Main">
             <a href="#top" class="brand" aria-label="Mrinmoy Dewan, back to top"><span aria-hidden="true">MD</span></a>
+            <span class="brand-name" aria-hidden="true">Mrinmoy Dewan</span>
 
             <ul class="nav-links" id="nav-links">
                 <li><a href="#about">About</a></li>
@@ -101,6 +102,7 @@
 
         <!-- ============ HERO ============ -->
         <section class="hero" id="top" aria-labelledby="hero-title">
+            <canvas class="net" id="net" aria-hidden="true"></canvas>
             <div class="container hero-grid">
 
                 <div class="hero-copy">
@@ -138,20 +140,39 @@
 
                 <div class="hero-visual">
                     <div class="visual-in hero-in" data-d="3">
+                        <!-- Motion graphic: orbit rings with satellites (CSS-animated SVG) -->
+                        <svg class="rings" viewBox="0 0 400 400" aria-hidden="true" focusable="false">
+                            <circle class="ring ring-a" cx="200" cy="200" r="150" pathLength="1"/>
+                            <circle class="ring ring-b" cx="200" cy="200" r="174"/>
+                            <circle class="ring ring-c" cx="200" cy="200" r="196" pathLength="1"/>
+                            <g class="sat sat-a"><circle cx="350" cy="200" r="5"/></g>
+                            <g class="sat sat-b"><circle cx="26" cy="200" r="4"/></g>
+                            <g class="sat sat-c"><circle cx="200" cy="4" r="3.2"/></g>
+                        </svg>
+                        <!-- To change the photo, replace assets/profile.jpg (any size or shape; 1200px+ wide looks sharpest) -->
                         <div class="portrait surface tilt">
                             <img src="assets/profile.jpg" alt="Portrait of Mrinmoy Dewan" width="402" height="401" fetchpriority="high">
+                            <span class="shine" aria-hidden="true"></span>
                         </div>
                         <div class="orbit" aria-hidden="true"></div>
                     </div>
                 </div>
 
             </div>
+            <a class="scroll-cue" href="#about" aria-label="Scroll to About"><span aria-hidden="true"></span></a>
         </section>
+
+        <!-- ============ SKILLS TICKER (decorative; the real list is in Skills) ============ -->
+        <div class="ticker" id="ticker" aria-hidden="true">
+            <div class="ticker-row"></div>
+            <div class="ticker-row ticker-row--rev"></div>
+        </div>
 
         <!-- ============ ABOUT ============ -->
         <section class="section" id="about" aria-labelledby="about-title">
             <div class="container">
                 <header class="section-head reveal">
+                    <p class="sec-no" aria-hidden="true"><span>01</span><i></i></p>
                     <h2 id="about-title" class="h2">About</h2>
                     <p class="section-sub">What I study, what I build, what I care about.</p>
                 </header>
@@ -182,6 +203,7 @@
         <section class="section" id="experience" aria-labelledby="exp-title">
             <div class="container">
                 <header class="section-head reveal">
+                    <p class="sec-no" aria-hidden="true"><span>02</span><i></i></p>
                     <h2 id="exp-title" class="h2">Experience</h2>
                     <p class="section-sub">Leadership roles and education.</p>
                 </header>
@@ -203,6 +225,7 @@
         <section class="section" id="projects" aria-labelledby="proj-title">
             <div class="container">
                 <header class="section-head reveal">
+                    <p class="sec-no" aria-hidden="true"><span>03</span><i></i></p>
                     <h2 id="proj-title" class="h2">Projects</h2>
                     <p class="section-sub">Selected work. Open a project for details, or go straight to the source.</p>
                 </header>
@@ -217,6 +240,7 @@
         <section class="section" id="skills" aria-labelledby="skills-title">
             <div class="container">
                 <header class="section-head reveal">
+                    <p class="sec-no" aria-hidden="true"><span>04</span><i></i></p>
                     <h2 id="skills-title" class="h2">Skills</h2>
                     <p class="section-sub">Tools I use regularly.</p>
                 </header>
