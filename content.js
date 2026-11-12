@@ -21,8 +21,8 @@ window.PORTFOLIO = {
     education: [
         {
             title: 'B.Sc. in Computer Science & Engineering',
-            org: 'Jagannath University, Dhaka',
-            date: '2020 – Present',
+            org: 'Jagannath University, Dhaka · CGPA 3.07 / 4.00',
+            date: '2020 – 2026',
             text: 'Data Structures, Algorithms, Cybersecurity, Software Engineering, Computer Networks.',
         },
         {
