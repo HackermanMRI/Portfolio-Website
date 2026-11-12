@@ -11,13 +11,13 @@
     <meta name="theme-color" content="#060913">
     <meta name="color-scheme" content="dark">
 
-    <title>Mrinmoy Dewan | Computer Science Student, Security and Software</title>
-    <meta name="description" content="Mrinmoy Dewan is a computer science student at Jagannath University building secure Android and web software. Projects, experience and contact.">
+    <title>Mrinmoy Dewan | Computer Science Graduate, Security and Software</title>
+    <meta name="description" content="Mrinmoy Dewan is a computer science graduate of Jagannath University building secure Android and web software. Projects, experience and contact.">
     <meta name="author" content="Mrinmoy Dewan">
 
     <meta property="og:type" content="website">
     <meta property="og:title" content="Mrinmoy Dewan | Security and Software">
-    <meta property="og:description" content="Computer science student building secure Android and web software.">
+    <meta property="og:description" content="Computer science graduate building secure Android and web software.">
     <meta property="og:url" content="https://hackermanmri.github.io/">
     <meta property="og:image" content="https://hackermanmri.github.io/assets/og-image.jpg">
     <meta name="twitter:card" content="summary_large_image">
@@ -71,6 +71,7 @@
     <header class="nav-wrap">
         <nav class="nav glass glass--lens" aria-label="Main">
             <a href="#top" class="brand" aria-label="Mrinmoy Dewan, back to top"><span aria-hidden="true">MD</span></a>
+            <span class="brand-name" aria-hidden="true">Mrinmoy Dewan</span>
 
             <ul class="nav-links" id="nav-links">
                 <li><a href="#about">About</a></li>
@@ -101,6 +102,7 @@
 
         <!-- ============ HERO ============ -->
         <section class="hero" id="top" aria-labelledby="hero-title">
+            <canvas class="net" id="net" aria-hidden="true"></canvas>
             <div class="container hero-grid">
 
                 <div class="hero-copy">
@@ -115,7 +117,7 @@
                     </h1>
 
                     <p class="lede hero-in" data-d="6">
-                        Computer science student at Jagannath University, building secure Android and web software and learning how systems fail.
+                        Computer science graduate of Jagannath University, building secure Android and web software and learning how systems fail.
                     </p>
 
                     <ul class="focus hero-in" data-d="7" aria-label="Focus areas">
@@ -138,20 +140,39 @@
 
                 <div class="hero-visual">
                     <div class="visual-in hero-in" data-d="3">
+                        <!-- Motion graphic: orbit rings with satellites (CSS-animated SVG) -->
+                        <svg class="rings" viewBox="0 0 400 400" aria-hidden="true" focusable="false">
+                            <circle class="ring ring-a" cx="200" cy="200" r="150" pathLength="1"/>
+                            <circle class="ring ring-b" cx="200" cy="200" r="174"/>
+                            <circle class="ring ring-c" cx="200" cy="200" r="196" pathLength="1"/>
+                            <g class="sat sat-a"><circle cx="350" cy="200" r="5"/></g>
+                            <g class="sat sat-b"><circle cx="26" cy="200" r="4"/></g>
+                            <g class="sat sat-c"><circle cx="200" cy="4" r="3.2"/></g>
+                        </svg>
+                        <!-- To change the photo, replace assets/profile.jpg (any size or shape; 1200px+ wide looks sharpest) -->
                         <div class="portrait surface tilt">
                             <img src="assets/profile.jpg" alt="Portrait of Mrinmoy Dewan" width="402" height="401" fetchpriority="high">
+                            <span class="shine" aria-hidden="true"></span>
                         </div>
                         <div class="orbit" aria-hidden="true"></div>
                     </div>
                 </div>
 
             </div>
+            <a class="scroll-cue" href="#about" aria-label="Scroll to About"><span aria-hidden="true"></span></a>
         </section>
+
+        <!-- ============ SKILLS TICKER (decorative; the real list is in Skills) ============ -->
+        <div class="ticker" id="ticker" aria-hidden="true">
+            <div class="ticker-row"></div>
+            <div class="ticker-row ticker-row--rev"></div>
+        </div>
 
         <!-- ============ ABOUT ============ -->
         <section class="section" id="about" aria-labelledby="about-title">
             <div class="container">
                 <header class="section-head reveal">
+                    <p class="sec-no" aria-hidden="true"><span>01</span><i></i></p>
                     <h2 id="about-title" class="h2">About</h2>
                     <p class="section-sub">What I study, what I build, what I care about.</p>
                 </header>
@@ -159,17 +180,17 @@
                 <div class="about-grid">
                     <div class="about-copy reveal">
                         <p>
-                            I'm a computer science student with a foundation in cybersecurity, Android and web development, and visual design.
+                            I'm a computer science graduate with a foundation in cybersecurity, Android and web development, and visual design.
                             I'm most interested in how software behaves under load and under attack, which is why performance analysis and security keep pulling me back in.
                         </p>
                         <p>
-                            Outside coursework I run teams and events: I've served as Vice Chair of the IEEE Computer Society JnU Student Branch Chapter and as webmaster for its website.
-                            I'm open to collaborations, internships and conversations about security, software engineering and system optimisation.
+                            Alongside my degree I ran teams and events: I've served as Vice Chair of the IEEE Computer Society JnU Student Branch Chapter and as webmaster for its website.
+                            I'm open to collaborations, full-time roles and conversations about security, software engineering and system optimisation.
                         </p>
                     </div>
 
                     <dl class="facts surface tilt reveal" data-i="2">
-                        <div><dt>Studying</dt><dd>B.Sc. Computer Science &amp; Engineering</dd></div>
+                        <div><dt>Degree</dt><dd>B.Sc. Computer Science &amp; Engineering</dd></div>
                         <div><dt>University</dt><dd>Jagannath University, Dhaka</dd></div>
                         <div><dt>Focus</dt><dd>Cybersecurity, Android, Web</dd></div>
                         <div><dt>Based in</dt><dd>Narayanganj, Bangladesh</dd></div>
@@ -182,6 +203,7 @@
         <section class="section" id="experience" aria-labelledby="exp-title">
             <div class="container">
                 <header class="section-head reveal">
+                    <p class="sec-no" aria-hidden="true"><span>02</span><i></i></p>
                     <h2 id="exp-title" class="h2">Experience</h2>
                     <p class="section-sub">Leadership roles and education.</p>
                 </header>
@@ -203,6 +225,7 @@
         <section class="section" id="projects" aria-labelledby="proj-title">
             <div class="container">
                 <header class="section-head reveal">
+                    <p class="sec-no" aria-hidden="true"><span>03</span><i></i></p>
                     <h2 id="proj-title" class="h2">Projects</h2>
                     <p class="section-sub">Selected work. Open a project for details, or go straight to the source.</p>
                 </header>
@@ -217,6 +240,7 @@
         <section class="section" id="skills" aria-labelledby="skills-title">
             <div class="container">
                 <header class="section-head reveal">
+                    <p class="sec-no" aria-hidden="true"><span>04</span><i></i></p>
                     <h2 id="skills-title" class="h2">Skills</h2>
                     <p class="section-sub">Tools I use regularly.</p>
                 </header>
@@ -232,7 +256,7 @@
             <div class="container">
                 <div class="contact-card surface tilt reveal">
                     <h2 id="contact-title" class="h2">Let's talk</h2>
-                    <p class="contact-sub">Email is the best way to reach me. I'm happy to talk about internships, projects and security.</p>
+                    <p class="contact-sub">Email is the best way to reach me. I'm happy to talk about roles, projects and security.</p>
 
                     <div class="contact-actions">
                         <a class="btn btn-primary magnetic" href="mailto:mrinmoylax01@gmail.com">

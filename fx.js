@@ -207,13 +207,99 @@
         });
     }
 
-    /* ---------- pause hero loops when it is offscreen ---------- */
+    /* ---------- hero visibility: pause loops and the network canvas when offscreen ---------- */
     var hero = document.querySelector('.hero');
+    var heroVisible = true, heroListeners = [];
     if (hero && 'IntersectionObserver' in window) {
-        new IntersectionObserver(function (es) { hero.classList.toggle('is-off', !es[0].isIntersecting); }).observe(hero);
+        new IntersectionObserver(function (es) {
+            heroVisible = es[0].isIntersecting;
+            hero.classList.toggle('is-off', !heroVisible);
+            heroListeners.forEach(function (fn) { fn(); });
+        }).observe(hero);
     }
 
-    function init() { setupPointer(); materialise(); }
+    /* ---------- motion graphic: drifting node network behind the hero ----------
+       Canvas 2D, not DOM: ~60 nodes and their links are one bitmap, so there is no layout or
+       style cost per frame. Runs its own loop because it draws every frame while visible,
+       and stops completely when the hero is offscreen, the tab is hidden, or effects are Lite. */
+    function network() {
+        var c = document.getElementById('net');
+        if (!c || !c.getContext) { return; }
+        var ctx = c.getContext('2d');
+        var pts = [], w = 0, h = 0, id = 0, running = false;
+        var dpr = Math.min(window.devicePixelRatio || 1, 2);
+        var LINK = 140, mouse = { x: -9999, y: -9999 };
+
+        function size() {
+            var r = c.getBoundingClientRect();
+            w = r.width; h = r.height;
+            c.width = Math.round(w * dpr); c.height = Math.round(h * dpr);
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            var n = Math.max(14, Math.min(64, Math.round(w * h / 21000)));
+            pts = [];
+            for (var i = 0; i < n; i++) {
+                pts.push({ x: Math.random() * w, y: Math.random() * h, vx: (Math.random() - .5) * .28, vy: (Math.random() - .5) * .28, r: 1 + Math.random() * 1.5 });
+            }
+            paint();
+        }
+
+        function paint() {
+            ctx.clearRect(0, 0, w, h);
+            var i, j, a, b, dx, dy, d;
+            ctx.lineWidth = 1;
+            for (i = 0; i < pts.length; i++) {
+                a = pts[i];
+                for (j = i + 1; j < pts.length; j++) {
+                    b = pts[j]; dx = a.x - b.x; dy = a.y - b.y; d = dx * dx + dy * dy;
+                    if (d < LINK * LINK) {
+                        ctx.strokeStyle = 'rgba(125,190,255,' + ((1 - Math.sqrt(d) / LINK) * .2).toFixed(3) + ')';
+                        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+                    }
+                }
+                dx = a.x - mouse.x; dy = a.y - mouse.y; d = Math.sqrt(dx * dx + dy * dy);
+                if (d < 190) {                                   // nodes near the pointer link to it
+                    ctx.strokeStyle = 'rgba(170,150,255,' + ((1 - d / 190) * .5).toFixed(3) + ')';
+                    ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(mouse.x, mouse.y); ctx.stroke();
+                }
+                ctx.fillStyle = 'rgba(170,215,255,.6)';
+                ctx.beginPath(); ctx.arc(a.x, a.y, a.r, 0, 6.283); ctx.fill();
+            }
+        }
+
+        function tick() {
+            id = 0;
+            if (!running) { return; }
+            for (var i = 0; i < pts.length; i++) {
+                var p = pts[i];
+                p.x += p.vx; p.y += p.vy;
+                if (p.x < -20) { p.x = w + 20; } else if (p.x > w + 20) { p.x = -20; }
+                if (p.y < -20) { p.y = h + 20; } else if (p.y > h + 20) { p.y = -20; }
+            }
+            paint();
+            id = requestAnimationFrame(tick);
+        }
+
+        function sync() {
+            var should = heroVisible && !document.hidden && !lite();
+            if (should && !running) { running = true; id = requestAnimationFrame(tick); }
+            else if (!should && running) { running = false; if (id) { cancelAnimationFrame(id); id = 0; } }
+        }
+
+        var resizeTimer = 0;
+        window.addEventListener('resize', function () { clearTimeout(resizeTimer); resizeTimer = setTimeout(size, 150); });
+        document.addEventListener('visibilitychange', sync);
+        heroListeners.push(sync);
+        new MutationObserver(sync).observe(root, { attributes: true, attributeFilter: ['data-fx'] });
+        if (reduceMotion.addEventListener) { reduceMotion.addEventListener('change', sync); }
+        if (finePointer.matches && hero) {
+            hero.addEventListener('pointermove', function (e) { var r = c.getBoundingClientRect(); mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top; }, { passive: true });
+            hero.addEventListener('pointerleave', function () { mouse.x = mouse.y = -9999; });
+        }
+        size();
+        sync();
+    }
+
+    function init() { setupPointer(); materialise(); network(); }
     // Always after DOMContentLoaded: deferred main.js has rendered the cards by then.
     document.addEventListener('DOMContentLoaded', init);
 })();
