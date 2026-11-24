@@ -50,6 +50,7 @@
         if (src) {
             var img = new Image();
             img.src = src; img.alt = ''; img.decoding = 'async';
+            if (!cls) { img.loading = 'lazy'; img.width = 800; img.height = 400; }   // grid covers: lazy, with a reserved box (no layout shift)
             wrap.appendChild(img);
         } else {
             wrap.classList.add('cover--gen');
