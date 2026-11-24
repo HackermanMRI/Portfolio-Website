@@ -9,7 +9,7 @@
 window.PORTFOLIO = {
 
     person: {
-        name: 'Mrinmoy Dewan',
+        name: 'Mrinmoy Shimanto',
         email: 'mrinmoylax01@gmail.com',
         github: 'https://github.com/HackermanMRI',
         linkedin: 'https://www.linkedin.com/in/mrinmoydewan',
@@ -138,10 +138,10 @@ window.PORTFOLIO = {
     ],
 
     skills: [
-        { group: 'Languages',      items: ['C', 'C++', 'Python', 'Java', 'JavaScript'] },
-        { group: 'Web',            items: ['HTML', 'CSS'] },
-        { group: 'Data',           items: ['MySQL', 'Firebase'] },
-        { group: 'Tools',          items: ['GitHub', 'Linux (Ubuntu)', 'Kali Linux', 'Android Studio', 'VS Code'] },
-        { group: 'Design',         items: ['Photoshop', 'Illustrator', 'After Effects', 'Canva'] },
+        { group: 'Languages',      items: ['C', 'C++', 'Python', 'Java', 'Prolog'] },
+        { group: 'Web',            items: ['HTML', 'React', 'CSS', 'tailwind-css', 'JavaScript', 'Node.js'] },
+        { group: 'Data',           items: ['MySQL', 'Firebase', 'PostgreSQL'] },
+        { group: 'Tools',          items: ['GitHub', 'Linux (Ubuntu)', 'Linux (Kali)', 'Android Studio', 'VS Code', 'Docker', 'Tailscale'] },
+        { group: 'Design',         items: ['Photoshop', 'Illustrator', 'After Effects', 'Canva', 'Figma'] },
     ],
 };
