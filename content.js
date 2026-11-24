@@ -67,13 +67,20 @@ window.PORTFOLIO = {
         },
     ],
 
-    /* cover: image path, or null to show a generated cover.
+    /* Work experience, newest first. Same fields as leadership.
+       Leave empty and the site shows an "open to roles" note instead. */
+    work: [],
+
+    /* category: one of web, android, games, utilities, desktop, security, design
+       (any other word also works; it becomes its own filter).
+       cover: image path, or null to show a generated cover.
        hue: 0-360, only used for generated covers.
        gallery: list of image paths (optional).
        demo: https:// link, or null (the button is hidden when null). */
     projects: [
         {
             id: 'systemedge',
+            category: 'android',
             title: 'SystemEdge',
             kind: 'Android app',
             summary: 'An Android app that tests and benchmarks the hardware inside a smartphone.',
@@ -92,6 +99,7 @@ window.PORTFOLIO = {
         },
         {
             id: 'lifelink',
+            category: 'web',
             title: 'LifeLink',
             kind: 'Web app',
             summary: 'A web platform for managing medical services, appointments and patient records.',
@@ -107,6 +115,7 @@ window.PORTFOLIO = {
         },
         {
             id: 'streamora',
+            category: 'android',
             title: 'Streamora',
             kind: 'Android app',
             summary: 'An Android game-streaming app with an interactive, user-friendly interface.',
@@ -122,6 +131,7 @@ window.PORTFOLIO = {
         },
         {
             id: 'rubiks-cube',
+            category: 'games',
             title: "3D Rubik's Cube Simulator",
             kind: 'Desktop app',
             summary: "A 3D Rubik's Cube in Python that you can rotate, scramble and solve in real time.",

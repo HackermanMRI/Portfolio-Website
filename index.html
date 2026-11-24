@@ -64,6 +64,13 @@
         <symbol id="i-briefcase" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="7.5" width="18" height="12" rx="3"/><path d="M9 7.5V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5M3 13h18"/></symbol>
         <symbol id="i-layers" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m12 4 8.5 4.5L12 13 3.5 8.5z"/><path d="m3.5 12.5 8.5 4.5 8.5-4.5"/></symbol>
         <symbol id="i-cpu" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="3"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/></symbol>
+        <symbol id="i-shield" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/></symbol>
+        <symbol id="i-phone" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M11 18.5h2"/></symbol>
+        <symbol id="i-globe" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></symbol>
+        <symbol id="i-pen" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/></symbol>
+        <symbol id="i-chevron" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+        <symbol id="i-cap" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5L2 9z"/><path d="M6 11v5c2 1.7 4 2.5 6 2.5s4-.8 6-2.5v-5"/></symbol>
+        <symbol id="i-flag" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 21V4"/><path d="M4 4h12l-2 4 2 4H4"/></symbol>
         <symbol id="i-sliders" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 8h9M17 8h3M4 16h3M11 16h9"/><circle cx="15" cy="8" r="2"/><circle cx="9" cy="16" r="2"/></symbol>
     </svg>
 
@@ -175,11 +182,12 @@
                 <header class="section-head reveal">
                     <p class="sec-no" aria-hidden="true"><span>01</span><i></i></p>
                     <h2 id="about-title" class="h2">About</h2>
-                    <p class="section-sub">What I study, what I build, what I care about.</p>
+                    <p class="section-sub">What I build and what I care about.</p>
                 </header>
 
-                <div class="about-grid">
-                    <div class="about-copy reveal">
+                <div class="about">
+                    <div class="about-main surface reveal">
+                        <p class="about-lead">I build Android and web software, then try to break it.</p>
                         <p>
                             I have a foundation in <b>Cybersecurity</b>, <b>Android</b> and <b>Web development</b> with a creative visual design sense.
                             I'm most interested in how software behaves under load and under attack, which is why performance analysis and security keep pulling me back in.
@@ -190,12 +198,35 @@
                         </p>
                     </div>
 
-                    <dl class="facts surface tilt reveal" data-i="2">
+                    <dl class="facts surface reveal" data-i="1">
                         <div><dt>Degree</dt><dd>B.Sc. Computer Science &amp; Engineering</dd></div>
                         <div><dt>University</dt><dd>Jagannath University, Dhaka</dd></div>
-                        <div><dt>Focus</dt><dd>Cybersecurity, Android, Web</dd></div>
+                        <div><dt>Graduated</dt><dd>2026</dd></div>
                         <div><dt>Based in</dt><dd>Narayanganj, Bangladesh</dd></div>
                     </dl>
+
+                    <ul class="focus-grid reveal" data-i="2" aria-label="What I work on">
+                        <li class="focus-item surface">
+                            <svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg>
+                            <h3>Security</h3>
+                            <p>Web app testing, Linux hardening and how systems fail.</p>
+                        </li>
+                        <li class="focus-item surface">
+                            <svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg>
+                            <h3>Android</h3>
+                            <p>Native Java apps that read real device and system data.</p>
+                        </li>
+                        <li class="focus-item surface">
+                            <svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg>
+                            <h3>Web</h3>
+                            <p>React and Node front to back, deployed with Docker.</p>
+                        </li>
+                        <li class="focus-item surface">
+                            <svg class="ic" aria-hidden="true"><use href="#i-pen"/></svg>
+                            <h3>Design</h3>
+                            <p>Interfaces and event branding in Figma and Adobe tools.</p>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </section>
@@ -206,18 +237,39 @@
                 <header class="section-head reveal">
                     <p class="sec-no" aria-hidden="true"><span>02</span><i></i></p>
                     <h2 id="exp-title" class="h2">Experience</h2>
-                    <p class="section-sub">Leadership roles and education.</p>
+                    <p class="section-sub">Leadership, education and work. Open a group to see the details.</p>
                 </header>
 
-                <div class="exp-grid">
-                    <div>
-                        <h3 class="h3 reveal">Leadership and volunteering</h3>
-                        <ol class="timeline" id="leadership-list"></ol>
-                    </div>
-                    <div>
-                        <h3 class="h3 reveal">Education</h3>
-                        <ol class="timeline" id="education-list"></ol>
-                    </div>
+                <!-- Each group is a native <details>: closed by default, works without JavaScript.
+                     main.js fills the rows and the summary meta from content.js. -->
+                <div class="acc-stack">
+                    <details class="acc surface reveal" id="acc-leadership" data-list="leadership">
+                        <summary>
+                            <span class="acc-ic" aria-hidden="true"><svg class="ic"><use href="#i-flag"/></svg></span>
+                            <span class="acc-head"><span class="acc-title">Leadership and volunteering</span><span class="acc-meta"></span></span>
+                            <span class="acc-count"></span>
+                            <svg class="ic acc-chev" aria-hidden="true"><use href="#i-chevron"/></svg>
+                        </summary>
+                        <ol class="acc-body"></ol>
+                    </details>
+                    <details class="acc surface reveal" id="acc-education" data-list="education" data-i="1">
+                        <summary>
+                            <span class="acc-ic" aria-hidden="true"><svg class="ic"><use href="#i-cap"/></svg></span>
+                            <span class="acc-head"><span class="acc-title">Education</span><span class="acc-meta"></span></span>
+                            <span class="acc-count"></span>
+                            <svg class="ic acc-chev" aria-hidden="true"><use href="#i-chevron"/></svg>
+                        </summary>
+                        <ol class="acc-body"></ol>
+                    </details>
+                    <details class="acc surface reveal" id="acc-work" data-list="work" data-i="2">
+                        <summary>
+                            <span class="acc-ic" aria-hidden="true"><svg class="ic"><use href="#i-briefcase"/></svg></span>
+                            <span class="acc-head"><span class="acc-title">Work experience</span><span class="acc-meta"></span></span>
+                            <span class="acc-count"></span>
+                            <svg class="ic acc-chev" aria-hidden="true"><use href="#i-chevron"/></svg>
+                        </summary>
+                        <ol class="acc-body"></ol>
+                    </details>
                 </div>
             </div>
         </section>
@@ -231,9 +283,15 @@
                     <p class="section-sub">Selected work. Open a project for details, or go straight to the source.</p>
                 </header>
 
+                <div class="filter" id="project-filter" role="group" aria-label="Filter projects by category">
+                    <span class="filter-ind" aria-hidden="true"></span>
+                </div>
+                <p class="sr-only" id="filter-status" aria-live="polite"></p>
+
                 <ul class="projects" id="project-grid">
                     <noscript><li class="muted">Enable JavaScript to see projects, or browse them on <a href="https://github.com/HackermanMRI">GitHub</a>.</li></noscript>
                 </ul>
+                <div class="more-wrap"><button type="button" class="btn btn-glass glass more" id="project-more" aria-controls="project-grid" hidden></button></div>
             </div>
         </section>
 
