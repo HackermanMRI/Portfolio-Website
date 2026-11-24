@@ -102,32 +102,72 @@
         });
     }
 
-    /* ---------- index sections ---------- */
-    function renderTimeline(host, items) {
-        if (!host) { return; }
-        host.classList.add('timeline');
-        items.forEach(function (it, i) {
-            var li = el('li', 't-item surface reveal');
-            li.setAttribute('data-i', String(Math.min(i + 1, 4)));
-            li.appendChild(el('span', 't-dot')).setAttribute('aria-hidden', 'true');
-            li.appendChild(el('p', 't-date', it.date));
-            li.appendChild(el('h4', 't-title', it.title));
-            li.appendChild(el('p', 't-org', it.org));
-            if (it.text) { li.appendChild(el('p', 't-text', it.text)); }
-            host.appendChild(li);
+    /* ---------- experience: collapsible groups ----------
+       Each group is a native <details> in index.html, so it is keyboard and screen-reader
+       accessible and still opens without JavaScript. Here we only fill the rows and the
+       one-line preview shown on the closed summary. */
+    var GROUP_NOUN = { leadership: ['role', 'roles'], education: ['entry', 'entries'], work: ['role', 'roles'] };
+
+    function renderGroups() {
+        $$('details[data-list]').forEach(function (det) {
+            var key = det.getAttribute('data-list');
+            var items = Array.isArray(D[key]) ? D[key] : [];
+            var body = $('.acc-body', det), meta = $('.acc-meta', det), count = $('.acc-count', det);
+            var noun = GROUP_NOUN[key] || ['item', 'items'];
+
+            if (!items.length) {
+                det.classList.add('acc--empty');
+                meta.textContent = 'Open to full-time roles';
+                count.textContent = 'Soon';
+                var empty = el('li', 'row row--empty');
+                empty.appendChild(el('p', null, 'No roles listed yet. I am looking for my first full-time position in software or security.'));
+                var cta = link('glass-btn', '#contact', 'Get in touch', 'mail');
+                empty.appendChild(cta);
+                body.appendChild(empty);
+                return;
+            }
+
+            var first = items[0];
+            meta.textContent = first.title + ', ' + first.org;
+            count.textContent = items.length + ' ' + noun[items.length === 1 ? 0 : 1];
+
+            items.forEach(function (it, i) {
+                var li = el('li', 'row');
+                li.style.setProperty('--r', String(i));
+                li.appendChild(el('p', 'row-date', it.date));
+                var main = el('div', 'row-main');
+                main.appendChild(el('h4', 'row-title', it.title));
+                main.appendChild(el('p', 'row-org', it.org));
+                if (it.text) { main.appendChild(el('p', 'row-text', it.text)); }
+                li.appendChild(main);
+                body.appendChild(li);
+            });
         });
     }
+
+    /* ---------- projects: compact grid, category filter, "show all" ---------- */
+    var CATEGORY_LABEL = { web: 'Web', android: 'Android', games: 'Games', utilities: 'Utilities', desktop: 'Desktop', security: 'Security', design: 'Design' };
+    function catKey(p) { return String(p.category || 'other').toLowerCase().replace(/[^a-z0-9-]/g, '') || 'other'; }
+    function catLabel(k) { return CATEGORY_LABEL[k] || k.charAt(0).toUpperCase() + k.slice(1); }
 
     function renderProjects(host) {
         if (!host) { return; }
         D.projects.forEach(function (p, i) {
             var cell = el('li', 'p-cell');
+            cell.setAttribute('data-cat', catKey(p));
+            cell.style.setProperty('--vt', 'card-' + vtName(p.id).slice(6));   // used only while filtering
+
             var card = el('article', 'p-card surface tilt reveal');
-            card.setAttribute('data-i', String(Math.min(i + 1, 4)));
+            card.setAttribute('data-i', String(i % 3));
             card.appendChild(coverEl(p));
 
             var body = el('div', 'p-body');
-            body.appendChild(el('p', 'p-kind', p.kind));
+            var top = el('p', 'p-kind');
+            top.appendChild(el('span', 'p-cat', catLabel(catKey(p))));
+            var label = catLabel(catKey(p));
+            if (p.kind && p.kind.toLowerCase().indexOf(label.toLowerCase()) === -1) { top.appendChild(el('span', null, p.kind)); }   // skip "Android app" under an "Android" pill
+            body.appendChild(top);
+
             var h = el('h3', 'p-title');
             var a = el('a', null, p.title);
             a.href = 'project.html?id=' + encodeURIComponent(p.id);
@@ -135,23 +175,118 @@
             body.appendChild(h);
             body.appendChild(el('p', 'p-sum', p.summary));
 
+            var foot = el('div', 'p-foot');
             var chips = el('ul', 'chips');
-            p.stack.forEach(function (s) { chips.appendChild(el('li', 'chip', s)); });
-            body.appendChild(chips);
-
-            var links = el('div', 'p-links');
+            p.stack.slice(0, 3).forEach(function (s) { chips.appendChild(el('li', 'chip', s)); });
+            if (p.stack.length > 3) { chips.appendChild(el('li', 'chip chip--more', '+' + (p.stack.length - 3))); }
+            foot.appendChild(chips);
             var gh = safeUrl(p.github);
-            if (gh) { links.appendChild(link('glass-btn', gh, 'Source', 'github', true)); }
-            var more = el('span', 'p-more');
-            more.appendChild(el('span', null, 'Details'));
-            more.appendChild(icon('arrow'));
-            links.appendChild(more);
-            body.appendChild(links);
+            if (gh) {
+                var src = link('p-src', gh, 'Source', 'github', true);
+                src.setAttribute('aria-label', p.title + ' source code on GitHub');
+                foot.appendChild(src);
+            }
+            body.appendChild(foot);
 
             card.appendChild(body);
             cell.appendChild(card);
             host.appendChild(cell);
         });
+        setupProjectFilter(host);
+    }
+
+    function setupProjectFilter(grid) {
+        var bar = $('#project-filter'), more = $('#project-more'), status = $('#filter-status');
+        if (!bar || !more) { return; }
+        var cells = $$('.p-cell', grid);
+        var small = window.matchMedia('(max-width: 760px)');
+        var state = { cat: 'all', expanded: false };
+
+        /* pills: "All" plus every category that has at least one project, biggest first */
+        var counts = {};
+        cells.forEach(function (c) { var k = c.getAttribute('data-cat'); counts[k] = (counts[k] || 0) + 1; });
+        var cats = Object.keys(counts).sort(function (x, y) { return counts[y] - counts[x] || x.localeCompare(y); });
+        var pills = [['all', 'All', cells.length]].concat(cats.map(function (k) { return [k, catLabel(k), counts[k]]; }));
+        if (cats.length < 2) { bar.hidden = true; }
+
+        var ind = $('.filter-ind', bar);
+        var buttons = pills.map(function (pdef) {
+            var b = el('button', 'filter-btn');
+            b.type = 'button';
+            b.setAttribute('data-cat', pdef[0]);
+            b.appendChild(el('span', null, pdef[1]));
+            b.appendChild(el('span', 'filter-n', String(pdef[2])));
+            b.addEventListener('click', function () {
+                if (state.cat === pdef[0]) { return; }
+                state.cat = pdef[0]; state.expanded = false;
+                apply(true);
+            });
+            bar.appendChild(b);
+            return b;
+        });
+
+        /* arrow keys move between pills (one tab stop for the whole group) */
+        bar.addEventListener('keydown', function (e) {
+            var i = buttons.indexOf(document.activeElement);
+            if (i < 0) { return; }
+            var j = e.key === 'ArrowRight' ? i + 1 : e.key === 'ArrowLeft' ? i - 1 : e.key === 'Home' ? 0 : e.key === 'End' ? buttons.length - 1 : -1;
+            if (j === -1 && e.key !== 'ArrowLeft') { return; }
+            e.preventDefault();
+            j = (j + buttons.length) % buttons.length;
+            buttons[j].focus(); buttons[j].click();
+        });
+
+        more.addEventListener('click', function () {
+            state.expanded = !state.expanded;
+            apply(true);
+            if (!state.expanded) {
+                var top = grid.getBoundingClientRect().top;
+                if (top < 0) { grid.scrollIntoView({ block: 'start', behavior: window.FX && FX.lite() ? 'auto' : 'smooth' }); }
+            }
+        });
+
+        function placeIndicator(b) {
+            if (!ind || !b) { return; }
+            ind.style.setProperty('--x', b.offsetLeft + 'px');
+            ind.style.setProperty('--w', b.offsetWidth + 'px');
+        }
+
+        function render(fromUser) {
+            var limit = small.matches ? 4 : 6;
+            var matching = cells.filter(function (c) { return state.cat === 'all' || c.getAttribute('data-cat') === state.cat; });
+            var shown = state.expanded ? matching.length : Math.min(limit, matching.length);
+            cells.forEach(function (c) { c.hidden = true; });
+            matching.forEach(function (c, i) {
+                c.hidden = i >= shown;
+                if (!c.hidden && fromUser) { c.firstChild.classList.add('in'); }   // user is looking at the grid: skip the scroll reveal
+            });
+            buttons.forEach(function (b) {
+                var on = b.getAttribute('data-cat') === state.cat;
+                b.setAttribute('aria-pressed', String(on));
+                b.tabIndex = on ? 0 : -1;
+                if (on) { placeIndicator(b); }
+            });
+            var hiddenCount = matching.length - shown;
+            more.hidden = matching.length <= limit;
+            more.textContent = state.expanded ? 'Show fewer' : 'Show all ' + matching.length + ' projects (' + hiddenCount + ' more)';
+            more.setAttribute('aria-expanded', String(state.expanded));
+            if (status && fromUser) { status.textContent = 'Showing ' + shown + ' of ' + matching.length + (state.cat === 'all' ? ' projects' : ' ' + catLabel(state.cat) + ' projects'); }
+        }
+
+        /* animate the change with a View Transition where supported: cards slide to their new
+           slots, leaving cards fade out, new ones fade in. Elsewhere the change is instant. */
+        function apply(animate) {
+            var canVT = animate && document.startViewTransition && !(window.FX && FX.lite());
+            if (!canVT) { render(animate); return; }
+            grid.classList.add('is-filtering');
+            var t = document.startViewTransition(function () { render(true); });
+            t.finished.finally(function () { grid.classList.remove('is-filtering'); });
+        }
+
+        if (small.addEventListener) { small.addEventListener('change', function () { render(false); }); }
+        window.addEventListener('resize', function () { placeIndicator(buttons.filter(function (b) { return b.getAttribute('aria-pressed') === 'true'; })[0]); });
+        if (document.fonts && document.fonts.ready) { document.fonts.ready.then(function () { apply(false); }); }
+        apply(false);
     }
 
     function renderSkills(host) {
@@ -345,7 +480,7 @@
             var email = btn.getAttribute('data-email') || D.person.email;
             function done(ok) {
                 if (label) { label.textContent = ok ? 'Copied' : 'Copy failed'; }
-                if (status) { status.textContent = ok ? 'Email address copied' : 'Could not copy the email address'; }
+                if (status && fromUser) { status.textContent = ok ? 'Email address copied' : 'Could not copy the email address'; }
                 setTimeout(function () { if (label) { label.textContent = original; } }, 1800);
             }
             if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(email).then(function () { done(true); }, function () { done(false); }); } else { done(false); }
@@ -368,8 +503,7 @@
         splitHero();
         splitWords();
         renderTicker($('#ticker'));
-        renderTimeline($('#leadership-list'), D.leadership);
-        renderTimeline($('#education-list'), D.education);
+        renderGroups();
         renderProjects($('#project-grid'));
         renderSkills($('#skill-list'));
     }
