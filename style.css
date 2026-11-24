@@ -854,3 +854,187 @@
     }
     :root[data-fx="lite"] .acc::details-content { transition: none; }
 }
+
+/* ============================================================
+   PHONE LAYER (≤ 560px)
+   Phones got the desktop component sizes scaled down only slightly, which made every
+   element read big and bubbly. This layer gives phones their own scale instead:
+   15px body text, 18-20px corners, tighter rhythm, compact section chrome.
+   Touch targets stay ≥ 44px; only visual padding shrinks.
+   ============================================================ */
+@layer tokens {
+    @media (max-width: 560px) {
+        :root { --r-xl: 20px; --pad-card: .4rem; --nav-h: 54px; }
+    }
+}
+
+@layer base {
+    @media (max-width: 560px) {
+        body { font-size: .9375rem; line-height: 1.55; }
+        html { scroll-padding-top: 72px; }
+    }
+}
+
+@layer layout {
+    @media (max-width: 560px) {
+        .container { width: min(100% - 1.5rem, var(--wrap)); }
+        .section { padding: 1.9rem 0; }
+        .section-head { margin-bottom: .9rem; }
+        body { padding-bottom: calc(78px + var(--safe-b)); }
+        .hero { padding: calc(var(--nav-h) + var(--safe-t) + 1.6rem) 0 1.2rem; }
+        .footer { padding: 1rem 0 1.5rem; font-size: .82rem; }
+        .footer-in { padding-top: 1rem; gap: .7rem 1rem; }
+    }
+}
+
+@layer components {
+    @media (max-width: 560px) {
+        /* ---- floating bars: slimmer, so content gets the screen ---- */
+        .nav-wrap { inset: calc(8px + var(--safe-t)) 0 auto 0; padding-inline: .75rem; }
+        .nav { height: var(--nav-h); padding: .3rem; }
+        .brand { width: 44px; height: 44px; }
+        .brand-name { font-size: .98rem; }
+        .nav-cta { min-height: 44px; padding: .35rem .9rem; font-size: .88rem; }
+        .dock { bottom: calc(8px + var(--safe-b)); padding: 4px; border-radius: 26px; width: min(calc(100% - 20px), 420px); }
+        .dock a { min-height: 50px; gap: 2px; font-size: .6875rem; border-radius: 22px; }
+        .dock a .ic { width: 20px; height: 20px; }
+        .dock-lens { top: 4px; bottom: 4px; border-radius: 22px; }
+
+        /* ---- hero: shorter cover, name sized to the photo, not the screen ---- */
+        .portrait { padding: 6px; }
+        .portrait::after { inset: 6px; }
+        .portrait img { aspect-ratio: 4 / 3.7; }
+        .display { font-size: clamp(2.35rem, 11.2vw, 3rem); padding: 0 1rem .85rem; letter-spacing: -.035em; }
+        .display .line { padding-top: 6px; margin-top: -6px; }
+        .status { margin: .75rem .75rem 0; padding: .25rem .7rem .25rem .6rem; font-size: .72rem; gap: .45rem; }
+        .status-dot { width: 6px; height: 6px; }
+        .lede { margin-top: .95rem; font-size: .98rem; line-height: 1.55; }
+        .cta { margin-top: 1rem; gap: .6rem; }
+        .btn { min-height: 46px; padding: .6rem 1rem; font-size: .92rem; gap: .45rem; }
+        .btn .ic { width: 1em; height: 1em; }
+        .btn-primary { box-shadow: inset 0 1px 0 oklch(1 0 0 / .7), 0 8px 20px -12px oklch(0.8 0.12 232 / .7); }
+        .ticker { padding: .3rem 0; gap: .2rem; }
+        .ticker-row--rev { display: none; }
+        .tick { font-size: 1rem; }
+
+        /* ---- section chrome: heading + one short line, no decorative numbering ---- */
+        .sec-no { display: none; }
+        .h2 { font-size: 1.6rem; line-height: 1.1; }
+        .section-sub { margin-top: .3rem; font-size: .86rem; line-height: 1.45; }
+        .surface { box-shadow: inset 0 1px 0 oklch(1 0 0 / .1), 0 14px 30px -24px oklch(0 0 0 / .9); }
+
+        /* ---- About ---- */
+        .about { gap: .6rem; }
+        .about-main { padding: 1rem 1rem 1.05rem; }
+        .about-lead { font-size: 1.14rem !important; margin-bottom: .6rem; }
+        .about-main p { font-size: .9rem; line-height: 1.58; }
+        .about-main p + p { margin-top: .55rem; }
+        .about .facts { display: grid; grid-template-columns: 1fr 1fr; gap: 0 .9rem; padding: .25rem .95rem; }
+        .about .facts div { padding: .6rem 0; }
+        .about .facts div + div { border-top: 0; }
+        .about .facts div:nth-child(n+3) { border-top: 1px solid oklch(1 0 0 / .08); }
+        .facts dt { font-size: .72rem; }
+        .facts dd { font-size: .86rem; line-height: 1.35; }
+        .focus-grid { grid-template-columns: 1fr 1fr; gap: .6rem; }
+        .focus-item { display: block; padding: .75rem .8rem .8rem; border-radius: 16px; }
+        .focus-item .ic { width: 30px; height: 30px; padding: 7px; border-radius: 9px; }
+        .focus-item h3 { margin-top: .5rem; font-size: .92rem; }
+        .focus-item p { font-size: .78rem; line-height: 1.4; }
+
+        /* ---- Experience ---- */
+        .acc-stack { gap: .5rem; }
+        .acc { border-radius: 18px; }
+        .acc > summary { min-height: 60px; padding: .55rem .8rem .55rem .6rem; gap: .65rem; }
+        .acc-ic { width: 36px; height: 36px; border-radius: 11px; }
+        .acc-ic .ic { width: 17px; height: 17px; }
+        .acc-title { font-size: .95rem; }
+        .acc-meta { font-size: .78rem; }
+        .acc-chev { width: 18px; height: 18px; }
+        .acc-body { margin: 0 .7rem; padding: .1rem 0 .6rem; }
+        .row { padding: .6rem .15rem; }
+        .row-date { font-size: .72rem; }
+        .row-title { font-size: .92rem; }
+        .row-org, .row-text { font-size: .82rem; }
+        .row--empty p { font-size: .85rem; }
+
+        /* ---- Projects ---- */
+        .filter { margin-bottom: .7rem; padding: .22rem; }
+        .filter-ind { top: .22rem; bottom: .22rem; }
+        .filter-btn { min-height: 40px; padding: .3rem .75rem; font-size: .84rem; gap: .35rem; }
+        .filter-n { font-size: .6875rem; }
+        .projects { gap: .5rem; }
+        .p-card { --r-xl: 16px; border-radius: 16px; grid-template-columns: 74px minmax(0, 1fr); padding: .4rem; }
+        .p-card .cover { border-radius: 12px; }
+        .cover--gen span { font-size: 1.8rem; }
+        .p-body { padding: .05rem .25rem .1rem .7rem; }
+        .p-kind { gap: .35rem; }
+        .p-cat { font-size: .6875rem; padding: .05rem .42rem; }
+        .p-kind span + span { font-size: .6875rem; }
+        .p-title { margin-top: .2rem; font-size: .98rem; line-height: 1.2; }
+        .p-sum { margin-top: .15rem; font-size: .8rem; line-height: 1.42; }
+        /* Source becomes a corner icon (the link keeps its aria-label), so each card is 3 lines tall */
+        .p-card { position: relative; }
+        .p-body { padding-right: 2.4rem; }
+        .p-foot { position: absolute; top: .45rem; right: .45rem; margin: 0; }
+        .p-src { width: 34px; min-height: 34px; padding: 0; border-radius: 11px; }
+        .p-src span { display: none; }
+        .p-src::before { content: ""; position: absolute; inset: -5px; }          /* 44px touch area */
+        .p-src .ic { width: 16px; height: 16px; }
+        .more-wrap { margin-top: .9rem; }
+        .more { min-height: 44px; font-size: .86rem; }
+
+        /* ---- Skills: label on the left, chips flow on the right ---- */
+        .skills { gap: .7rem; padding: .9rem; border-radius: 18px; }
+        .skill-row { grid-template-columns: 4.6rem minmax(0, 1fr); gap: .6rem; align-items: start; }
+        .skill-row + .skill-row { padding-top: .7rem; }
+        .skill-group { font-size: .72rem; padding-top: .3rem; }
+        .skill-items { gap: .3rem; }
+        .skill { padding: .2rem .55rem; font-size: .78rem; }
+
+        /* ---- Contact ---- */
+        .contact-card { padding: 1.4rem 1rem 1.3rem; border-radius: 20px; }
+        .contact-card .h2 { font-size: 1.6rem; }
+        .contact-sub { margin-top: .5rem; font-size: .9rem; }
+        .contact-actions { display: grid; grid-template-columns: 1fr; gap: .5rem; margin-top: 1.1rem; }
+        .socials { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin-top: .5rem; }
+        .socials .glass-btn { width: 100%; min-height: 44px; font-size: .86rem; }
+        .fx-toggle { min-height: 44px; padding: .35rem .8rem; font-size: .8rem; }
+    }
+}
+
+
+/* ---------- mobile audit fixes (mobile-ux-optimizer quality gates) ---------- */
+@layer layout {
+    /* notch / rounded corners when a phone is held sideways (viewport-fit=cover) */
+    body { padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); }
+    .nav-wrap { padding-left: max(1rem, env(safe-area-inset-left, 0px)); padding-right: max(1rem, env(safe-area-inset-right, 0px)); }
+}
+
+@layer components {
+    /* Phone held sideways: a full-width cover photo would be taller than the screen,
+       so go back to text beside a small photo that fits the visible height. */
+    @media (max-width: 960px) and (max-height: 520px) and (orientation: landscape) {
+        .hero { padding: calc(var(--nav-h) + var(--safe-t) + 1.4rem) 0 1.4rem; }
+        .hero-grid { grid-template-columns: minmax(0, 1.35fr) minmax(0, .65fr); grid-template-areas: none; max-width: none; gap: 2rem; align-items: center; }
+        .hero-copy { display: block; }
+        .hero-visual { grid-area: auto; grid-column: 2; grid-row: 1; width: 100%; max-width: 240px; justify-self: end; }
+        .display { font-size: clamp(2.2rem, 6.4vw, 3.2rem); padding: 0; }
+        .status { margin: 0 0 .9rem; }
+        .lede { margin-top: .9rem; }
+        .cta { margin-top: 1rem; }
+        .portrait::after { display: none; }
+        .portrait img { aspect-ratio: 4 / 4.5; max-height: calc(100svh - var(--nav-h) - 3.5rem); }
+        .hero .focus { display: none; }
+    }
+
+    /* Touch has no hover: give every tappable surface a pressed state so a tap feels registered */
+    @media (hover: none) {
+        .p-card, .acc > summary, .focus-item, .filter-btn, .dock a, .p-src, .glass-btn {
+            transition: scale var(--t-micro) var(--ease), background-color var(--t-micro); }
+        .p-card:active { scale: .98; }
+        .acc > summary:active { background: oklch(1 0 0 / .05); }
+        .focus-item:active, .filter-btn:active, .p-src:active { scale: .96; }
+        .dock a:active { scale: .92; }
+        .focus-item:hover { transform: none; }                 /* sticky :hover after a tap looks like a bug */
+    }
+}
